@@ -33,9 +33,10 @@ const CategorizedProductList: React.FC = () => {
         ]);
         
         // Merge products with platform links from backend
-        const productsWithLinks = products.map(product => ({
-          ...product,
-          platformLinks: platformLinksData[product.id] || {
+        // Convert product.id to string to match platformLinksData keys
+        const productsWithLinks = products.map(product => {
+          const productIdStr = String(product.id);
+          const links = platformLinksData[productIdStr] || {
             wayfair: '',
             amazon: '',
             overstock: '',
@@ -43,8 +44,12 @@ const CategorizedProductList: React.FC = () => {
             lowes: '',
             target: '',
             kohls: ''
-          }
-        }));
+          };
+          return {
+            ...product,
+            platformLinks: links
+          };
+        });
         
         setProducts(productsWithLinks);
         
