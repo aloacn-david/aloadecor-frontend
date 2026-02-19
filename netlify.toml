@@ -1,0 +1,18 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production.environment]
+  VITE_SHOPIFY_STORE_DOMAIN = "goldianlightandliving.myshopify.com"
+  VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN = ""
+
+[context.deploy-preview.environment]
+  VITE_SHOPIFY_STORE_DOMAIN = "goldianlightandliving.myshopify.com"

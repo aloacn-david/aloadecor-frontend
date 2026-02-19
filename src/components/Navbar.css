@@ -1,0 +1,140 @@
+/* Navbar Styles - Williams Sonoma Inspired */
+
+.navbar {
+  background-color: #fff;
+  border-bottom: 1px solid #e5e5e5;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Top Bar */
+.navbar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Search Box */
+.navbar-search-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  width: 200px;
+}
+
+.search-input {
+  border: none;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  outline: none;
+  flex: 1;
+  color: #333;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+.search-button {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.search-button:hover {
+  background-color: #333;
+}
+
+/* Logo */
+.navbar-logo {
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: #000;
+  text-decoration: none;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.navbar-logo:hover {
+  color: #666;
+}
+
+/* Actions */
+.navbar-actions {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.action-link {
+  color: #333;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 400;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.action-link:hover {
+  color: #000;
+}
+
+/* Secondary Navigation */
+.navbar-secondary {
+  border-top: 1px solid #e5e5e5;
+  padding: 0.75rem 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 2.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li {
+  display: inline;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #000;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: #000;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
