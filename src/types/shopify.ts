@@ -40,13 +40,15 @@ export interface ShopifyProduct {
     title: string;
     handle: string;
   }>;
-  platformLinks: {
-    wayfair?: string;
-    amazon?: string;
-    overstock?: string;
-    homeDepot?: string;
-    lowes?: string;
-    target?: string;
-    kohls?: string;
-  };
+  platformLinks: PlatformLinks;
+}
+
+export interface PlatformLinks {
+  wayfair: string;
+  amazon: string;
+  overstock: string;
+  homeDepot: string;
+  lowes: string;
+  target: string;
+  kohls: string;
 }

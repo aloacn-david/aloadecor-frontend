@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ShopifyService } from '../services/shopify';
-import { ShopifyProduct } from '../types/shopify';
+import { ShopifyProduct, PlatformLinks } from '../types/shopify';
+import { 
+  getAllPlatformLinks, 
+  updateProductPlatformLinks, 
+  bulkUpdatePlatformLinks 
+} from '../services/platformLinks';
 import './AdminPanel.css';
-
-interface PlatformLinksForm {
-  wayfair?: string;
-  amazon?: string;
-  overstock?: string;
-  homeDepot?: string;
-  lowes?: string;
-  target?: string;
-  kohls?: string;
-}
 
 // Platform configuration
 const PLATFORMS = [
@@ -29,7 +24,7 @@ const AdminPanel: React.FC = () => {
   const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [editingProduct, setEditingProduct] = useState<ShopifyProduct | null>(null);
-  const [platformLinks, setPlatformLinks] = useState<PlatformLinksForm>({
+  const [platformLinks, setPlatformLinks] = useState<PlatformLinks>({
     wayfair: '',
     amazon: '',
     overstock: '',
@@ -45,6 +40,7 @@ const AdminPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'list' | 'bulk'>('list');
   const [csvData, setCsvData] = useState('');
   const [uploadMessage, setUploadMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Mock admin credentials - in a real app, this would be handled securely
   const ADMIN_CREDENTIALS = {
@@ -54,16 +50,43 @@ const AdminPanel: React.FC = () => {
 
   useEffect(() => {
     if (isLoggedIn) {
-      const fetchProducts = async () => {
-        const shopifyService = new ShopifyService();
-        const products = await shopifyService.fetchProducts();
-        setProducts(products);
-        setFilteredProducts(products);
-      };
-
-      fetchProducts();
+      loadProductsAndLinks();
     }
   }, [isLoggedIn]);
+
+  // Load products and platform links from backend
+  const loadProductsAndLinks = async () => {
+    setIsLoading(true);
+    try {
+      const shopifyService = new ShopifyService();
+      const [products, platformLinksData] = await Promise.all([
+        shopifyService.fetchProducts(),
+        getAllPlatformLinks()
+      ]);
+      
+      // Merge products with platform links from backend
+      const productsWithLinks = products.map(product => ({
+        ...product,
+        platformLinks: platformLinksData[product.id] || {
+          wayfair: '',
+          amazon: '',
+          overstock: '',
+          homeDepot: '',
+          lowes: '',
+          target: '',
+          kohls: ''
+        }
+      }));
+      
+      setProducts(productsWithLinks);
+      setFilteredProducts(productsWithLinks);
+    } catch (error) {
+      console.error('Error loading products:', error);
+      alert('Failed to load products. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (searchTerm.trim() === '') {
@@ -108,20 +131,35 @@ const AdminPanel: React.FC = () => {
     });
   };
 
-  const handleSaveLinks = () => {
+  const handleSaveLinks = async () => {
     if (!editingProduct) return;
 
-    // Update the product with new links
-    const updatedProducts = products.map(product => 
-      product.id === editingProduct.id 
-        ? { ...product, platformLinks: { ...platformLinks } } 
-        : product
-    );
+    setIsLoading(true);
+    try {
+      // Save to backend API
+      const success = await updateProductPlatformLinks(editingProduct.id, platformLinks);
+      
+      if (success) {
+        // Update local state
+        const updatedProducts = products.map(product => 
+          product.id === editingProduct.id 
+            ? { ...product, platformLinks: { ...platformLinks } } 
+            : product
+        );
 
-    setProducts(updatedProducts);
-    setFilteredProducts(updatedProducts);
-    setEditingProduct(null);
-    alert('Links updated successfully!');
+        setProducts(updatedProducts);
+        setFilteredProducts(updatedProducts);
+        setEditingProduct(null);
+        alert('Links updated successfully!');
+      } else {
+        alert('Failed to save links. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving links:', error);
+      alert('Error saving links. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancelEdit = () => {
@@ -129,18 +167,18 @@ const AdminPanel: React.FC = () => {
   };
 
   // Handle CSV/Excel bulk upload
-  const handleBulkUpload = () => {
+  const handleBulkUpload = async () => {
     if (!csvData.trim()) {
       setUploadMessage('Please enter data');
       return;
     }
 
+    setIsLoading(true);
     try {
       const lines = csvData.trim().split('\n');
       const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
       
-      let updatedCount = 0;
-      const updatedProducts = [...products];
+      const linksToUpdate: Record<string, PlatformLinks> = {};
 
       for (let i = 1; i < lines.length; i++) {
         const values = lines[i].split(',').map(v => v.trim());
@@ -150,12 +188,20 @@ const AdminPanel: React.FC = () => {
         const sku = skuIndex >= 0 ? values[skuIndex] : values[0];
 
         // Find product by SKU
-        const productIndex = updatedProducts.findIndex(p => 
+        const product = products.find(p => 
           p.variants.some(v => v.sku === sku)
         );
 
-        if (productIndex >= 0) {
-          const newLinks: PlatformLinksForm = { ...updatedProducts[productIndex].platformLinks };
+        if (product) {
+          const newLinks: PlatformLinks = { 
+            wayfair: '',
+            amazon: '',
+            overstock: '',
+            homeDepot: '',
+            lowes: '',
+            target: '',
+            kohls: ''
+          };
           
           PLATFORMS.forEach(platform => {
             const platformIndex = headers.findIndex(h => 
@@ -163,24 +209,30 @@ const AdminPanel: React.FC = () => {
               h.includes(platform.label.toLowerCase().replace("'", "").replace(" ", ""))
             );
             if (platformIndex >= 0 && values[platformIndex]) {
-              newLinks[platform.key as keyof PlatformLinksForm] = values[platformIndex];
+              newLinks[platform.key as keyof PlatformLinks] = values[platformIndex];
             }
           });
 
-          updatedProducts[productIndex] = {
-            ...updatedProducts[productIndex],
-            platformLinks: newLinks
-          };
-          updatedCount++;
+          linksToUpdate[product.id] = newLinks;
         }
       }
 
-      setProducts(updatedProducts);
-      setFilteredProducts(updatedProducts);
-      setUploadMessage(`Successfully updated ${updatedCount} products!`);
-      setCsvData('');
+      // Bulk update via API
+      const result = await bulkUpdatePlatformLinks(linksToUpdate);
+      
+      if (result.success) {
+        // Reload products to get updated links
+        await loadProductsAndLinks();
+        setUploadMessage(`Successfully updated ${result.updatedCount} products!`);
+        setCsvData('');
+      } else {
+        setUploadMessage('Failed to update products. Please try again.');
+      }
     } catch (error) {
+      console.error('Error parsing data:', error);
       setUploadMessage('Error parsing data. Please check format.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -258,6 +310,8 @@ const AdminPanel: React.FC = () => {
         </button>
       </div>
 
+      {isLoading && <div className="loading-indicator">Loading...</div>}
+
       {/* Product List Tab */}
       {activeTab === 'list' && (
         <div className="admin-content">
@@ -290,7 +344,7 @@ const AdminPanel: React.FC = () => {
                     
                     <div className="platform-links-status">
                       {PLATFORMS.map(platform => {
-                        const hasLink = product.platformLinks?.[platform.key as keyof PlatformLinksForm];
+                        const hasLink = product.platformLinks?.[platform.key as keyof PlatformLinks];
                         return (
                           <span 
                             key={platform.key} 
@@ -305,6 +359,7 @@ const AdminPanel: React.FC = () => {
                   <button 
                     onClick={() => handleEditClick(product)}
                     className="edit-button"
+                    disabled={isLoading}
                   >
                     Edit Links
                   </button>
@@ -323,7 +378,7 @@ const AdminPanel: React.FC = () => {
             Upload platform links using CSV format. Required columns: SKU, Wayfair, Amazon, Overstock, Home Depot, Lowe&apos;s, Target, Kohl&apos;s
           </p>
           
-          <button onClick={downloadTemplate} className="template-button">
+          <button onClick={downloadTemplate} className="template-button" disabled={isLoading}>
             Download Template
           </button>
 
@@ -335,17 +390,18 @@ const AdminPanel: React.FC = () => {
 ABC123,https://wayfair.com/...,https://amazon.com/...,...`}
               className="csv-textarea"
               rows={15}
+              disabled={isLoading}
             />
           </div>
 
           {uploadMessage && (
-            <div className={`upload-message ${uploadMessage.includes('Error') ? 'error' : 'success'}`}>
+            <div className={`upload-message ${uploadMessage.includes('Error') || uploadMessage.includes('Failed') ? 'error' : 'success'}`}>
               {uploadMessage}
             </div>
           )}
 
-          <button onClick={handleBulkUpload} className="upload-button">
-            Upload Links
+          <button onClick={handleBulkUpload} className="upload-button" disabled={isLoading}>
+            {isLoading ? 'Uploading...' : 'Upload Links'}
           </button>
         </div>
       )}
@@ -363,19 +419,24 @@ ABC123,https://wayfair.com/...,https://amazon.com/...,...`}
                 <label>{platform.label} URL:</label>
                 <input
                   type="text"
-                  value={platformLinks[platform.key as keyof PlatformLinksForm] || ''}
+                  value={platformLinks[platform.key as keyof PlatformLinks] || ''}
                   onChange={(e) => setPlatformLinks({
                     ...platformLinks, 
                     [platform.key]: e.target.value
                   })}
                   placeholder={`https://www.${platform.key.toLowerCase()}.com/...`}
+                  disabled={isLoading}
                 />
               </div>
             ))}
             
             <div className="modal-actions">
-              <button onClick={handleSaveLinks} className="save-button">Save Changes</button>
-              <button onClick={handleCancelEdit} className="cancel-button">Cancel</button>
+              <button onClick={handleSaveLinks} className="save-button" disabled={isLoading}>
+                {isLoading ? 'Saving...' : 'Save Changes'}
+              </button>
+              <button onClick={handleCancelEdit} className="cancel-button" disabled={isLoading}>
+                Cancel
+              </button>
             </div>
           </div>
         </div>

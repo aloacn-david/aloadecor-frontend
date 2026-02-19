@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ShopifyService } from '../services/shopify';
 import { ShopifyProduct } from '../types/shopify';
+import { getAllPlatformLinks } from '../services/platformLinks';
 import './CategorizedProductList.css';
 
 // Platform configuration - all available platforms with brand colors
@@ -24,16 +25,39 @@ const CategorizedProductList: React.FC = () => {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const shopifyService = new ShopifyService();
-      const products = await shopifyService.fetchProducts();
-      setProducts(products);
-      
-      // Extract unique categories
-      const uniqueCategories = [...new Set(products.map(p => p.category))];
-      setCategories(['All', ...uniqueCategories.sort()]);
-      
-      setFilteredProducts(products);
-      setLoading(false);
+      try {
+        const shopifyService = new ShopifyService();
+        const [products, platformLinksData] = await Promise.all([
+          shopifyService.fetchProducts(),
+          getAllPlatformLinks()
+        ]);
+        
+        // Merge products with platform links from backend
+        const productsWithLinks = products.map(product => ({
+          ...product,
+          platformLinks: platformLinksData[product.id] || {
+            wayfair: '',
+            amazon: '',
+            overstock: '',
+            homeDepot: '',
+            lowes: '',
+            target: '',
+            kohls: ''
+          }
+        }));
+        
+        setProducts(productsWithLinks);
+        
+        // Extract unique categories
+        const uniqueCategories = [...new Set(productsWithLinks.map(p => p.category))];
+        setCategories(['All', ...uniqueCategories.sort()]);
+        
+        setFilteredProducts(productsWithLinks);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchProducts();
