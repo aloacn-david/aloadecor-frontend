@@ -49,24 +49,44 @@ const ProductList: React.FC = () => {
               <div className="platform-links">
                 <h4 className="platform-links-title">Shop on:</h4>
                 <div className="platform-buttons">
-                  {product.platformLinks.wayfair && (
-                    <a href={product.platformLinks.wayfair} target="_blank" rel="noopener noreferrer" className="platform-button wayfair">
-                      Wayfair
+                  {product.platformLinks.amazon1 && (
+                    <a href={product.platformLinks.amazon1} target="_blank" rel="noopener noreferrer" className="platform-button amazon">
+                      Amazon 1
                     </a>
                   )}
-                  {product.platformLinks.amazon && (
-                    <a href={product.platformLinks.amazon} target="_blank" rel="noopener noreferrer" className="platform-button amazon">
-                      Amazon
+                  {product.platformLinks.amazon2 && (
+                    <a href={product.platformLinks.amazon2} target="_blank" rel="noopener noreferrer" className="platform-button amazon">
+                      Amazon 2
                     </a>
                   )}
-                  {product.platformLinks.overstock && (
-                    <a href={product.platformLinks.overstock} target="_blank" rel="noopener noreferrer" className="platform-button overstock">
-                      Overstock
+                  {product.platformLinks.wf1 && (
+                    <a href={product.platformLinks.wf1} target="_blank" rel="noopener noreferrer" className="platform-button wayfair">
+                      WF 1
                     </a>
                   )}
-                  {product.platformLinks.homeDepot && (
-                    <a href={product.platformLinks.homeDepot} target="_blank" rel="noopener noreferrer" className="platform-button homedepot">
-                      Home Depot
+                  {product.platformLinks.wf2 && (
+                    <a href={product.platformLinks.wf2} target="_blank" rel="noopener noreferrer" className="platform-button wayfair">
+                      WF 2
+                    </a>
+                  )}
+                  {product.platformLinks.os1 && (
+                    <a href={product.platformLinks.os1} target="_blank" rel="noopener noreferrer" className="platform-button overstock">
+                      OS 1
+                    </a>
+                  )}
+                  {product.platformLinks.os2 && (
+                    <a href={product.platformLinks.os2} target="_blank" rel="noopener noreferrer" className="platform-button overstock">
+                      OS 2
+                    </a>
+                  )}
+                  {product.platformLinks.hd1 && (
+                    <a href={product.platformLinks.hd1} target="_blank" rel="noopener noreferrer" className="platform-button homedepot">
+                      HD 1
+                    </a>
+                  )}
+                  {product.platformLinks.hd2 && (
+                    <a href={product.platformLinks.hd2} target="_blank" rel="noopener noreferrer" className="platform-button homedepot">
+                      HD 2
                     </a>
                   )}
                   {product.platformLinks.lowes && (
@@ -77,6 +97,16 @@ const ProductList: React.FC = () => {
                   {product.platformLinks.target && (
                     <a href={product.platformLinks.target} target="_blank" rel="noopener noreferrer" className="platform-button target">
                       Target
+                    </a>
+                  )}
+                  {product.platformLinks.walmart && (
+                    <a href={product.platformLinks.walmart} target="_blank" rel="noopener noreferrer" className="platform-button walmart">
+                      Walmart
+                    </a>
+                  )}
+                  {product.platformLinks.ebay && (
+                    <a href={product.platformLinks.ebay} target="_blank" rel="noopener noreferrer" className="platform-button ebay">
+                      Ebay
                     </a>
                   )}
                   {product.platformLinks.kohls && (
