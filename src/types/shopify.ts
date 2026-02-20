@@ -44,11 +44,17 @@ export interface ShopifyProduct {
 }
 
 export interface PlatformLinks {
-  wayfair: string;
-  amazon: string;
-  overstock: string;
-  homeDepot: string;
+  amazon1: string;
+  amazon2: string;
+  wf1: string;
+  wf2: string;
+  os1: string;
+  os2: string;
+  hd1: string;
+  hd2: string;
   lowes: string;
   target: string;
+  walmart: string;
+  ebay: string;
   kohls: string;
 }

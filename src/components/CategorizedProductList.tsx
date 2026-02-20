@@ -6,12 +6,18 @@ import './CategorizedProductList.css';
 
 // Platform configuration - all available platforms with brand colors
 const PLATFORMS = [
-  { key: 'wayfair', label: 'Wayfair', colorClass: 'wayfair' },
-  { key: 'amazon', label: 'Amazon', colorClass: 'amazon' },
-  { key: 'overstock', label: 'Overstock', colorClass: 'overstock' },
-  { key: 'homeDepot', label: 'Home Depot', colorClass: 'homedepot' },
+  { key: 'amazon1', label: 'Amazon 1', colorClass: 'amazon' },
+  { key: 'amazon2', label: 'Amazon 2', colorClass: 'amazon' },
+  { key: 'wf1', label: 'WF 1', colorClass: 'wayfair' },
+  { key: 'wf2', label: 'WF 2', colorClass: 'wayfair' },
+  { key: 'os1', label: 'OS 1', colorClass: 'overstock' },
+  { key: 'os2', label: 'OS 2', colorClass: 'overstock' },
+  { key: 'hd1', label: 'HD 1', colorClass: 'homedepot' },
+  { key: 'hd2', label: 'HD 2', colorClass: 'homedepot' },
   { key: 'lowes', label: "Lowe's", colorClass: 'lowes' },
   { key: 'target', label: 'Target', colorClass: 'target' },
+  { key: 'walmart', label: 'Walmart', colorClass: 'walmart' },
+  { key: 'ebay', label: 'Ebay', colorClass: 'ebay' },
   { key: 'kohls', label: "Kohl's", colorClass: 'kohls' },
 ] as const;
 
@@ -42,12 +48,18 @@ const CategorizedProductList: React.FC = () => {
         const productsWithLinks = products.map(product => {
           const productIdStr = String(product.id);
           const links = platformLinksData[productIdStr] || {
-            wayfair: '',
-            amazon: '',
-            overstock: '',
-            homeDepot: '',
+            amazon1: '',
+            amazon2: '',
+            wf1: '',
+            wf2: '',
+            os1: '',
+            os2: '',
+            hd1: '',
+            hd2: '',
             lowes: '',
             target: '',
+            walmart: '',
+            ebay: '',
             kohls: ''
           };
           if (platformLinksData[productIdStr]) {

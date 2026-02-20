@@ -27,12 +27,18 @@ export async function getProductPlatformLinks(productId: string | number): Promi
   } catch (error) {
     console.error(`[PlatformLinks] Error fetching links for product ${productId}:`, error);
     return {
-      wayfair: '',
-      amazon: '',
-      overstock: '',
-      homeDepot: '',
+      amazon1: '',
+      amazon2: '',
+      wf1: '',
+      wf2: '',
+      os1: '',
+      os2: '',
+      hd1: '',
+      hd2: '',
       lowes: '',
       target: '',
+      walmart: '',
+      ebay: '',
       kohls: ''
     };
   }

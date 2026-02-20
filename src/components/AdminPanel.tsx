@@ -10,12 +10,18 @@ import './AdminPanel.css';
 
 // Platform configuration
 const PLATFORMS = [
-  { key: 'wayfair', label: 'Wayfair' },
-  { key: 'amazon', label: 'Amazon' },
-  { key: 'overstock', label: 'Overstock' },
-  { key: 'homeDepot', label: 'Home Depot' },
+  { key: 'amazon1', label: 'Amazon 1' },
+  { key: 'amazon2', label: 'Amazon 2' },
+  { key: 'wf1', label: 'WF 1' },
+  { key: 'wf2', label: 'WF 2' },
+  { key: 'os1', label: 'OS 1' },
+  { key: 'os2', label: 'OS 2' },
+  { key: 'hd1', label: 'HD 1' },
+  { key: 'hd2', label: 'HD 2' },
   { key: 'lowes', label: "Lowe's" },
   { key: 'target', label: 'Target' },
+  { key: 'walmart', label: 'Walmart' },
+  { key: 'ebay', label: 'Ebay' },
   { key: 'kohls', label: "Kohl's" },
 ] as const;
 
@@ -25,12 +31,18 @@ const AdminPanel: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingProduct, setEditingProduct] = useState<ShopifyProduct | null>(null);
   const [platformLinks, setPlatformLinks] = useState<PlatformLinks>({
-    wayfair: '',
-    amazon: '',
-    overstock: '',
-    homeDepot: '',
+    amazon1: '',
+    amazon2: '',
+    wf1: '',
+    wf2: '',
+    os1: '',
+    os2: '',
+    hd1: '',
+    hd2: '',
     lowes: '',
     target: '',
+    walmart: '',
+    ebay: '',
     kohls: ''
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -68,12 +80,18 @@ const AdminPanel: React.FC = () => {
       const productsWithLinks = products.map(product => ({
         ...product,
         platformLinks: platformLinksData[product.id] || {
-          wayfair: '',
-          amazon: '',
-          overstock: '',
-          homeDepot: '',
+          amazon1: '',
+          amazon2: '',
+          wf1: '',
+          wf2: '',
+          os1: '',
+          os2: '',
+          hd1: '',
+          hd2: '',
           lowes: '',
           target: '',
+          walmart: '',
+          ebay: '',
           kohls: ''
         }
       }));
@@ -121,12 +139,18 @@ const AdminPanel: React.FC = () => {
   const handleEditClick = (product: ShopifyProduct) => {
     setEditingProduct(product);
     setPlatformLinks({
-      wayfair: product.platformLinks?.wayfair || '',
-      amazon: product.platformLinks?.amazon || '',
-      overstock: product.platformLinks?.overstock || '',
-      homeDepot: product.platformLinks?.homeDepot || '',
+      amazon1: product.platformLinks?.amazon1 || '',
+      amazon2: product.platformLinks?.amazon2 || '',
+      wf1: product.platformLinks?.wf1 || '',
+      wf2: product.platformLinks?.wf2 || '',
+      os1: product.platformLinks?.os1 || '',
+      os2: product.platformLinks?.os2 || '',
+      hd1: product.platformLinks?.hd1 || '',
+      hd2: product.platformLinks?.hd2 || '',
       lowes: product.platformLinks?.lowes || '',
       target: product.platformLinks?.target || '',
+      walmart: product.platformLinks?.walmart || '',
+      ebay: product.platformLinks?.ebay || '',
       kohls: product.platformLinks?.kohls || '',
     });
   };
@@ -193,19 +217,25 @@ const AdminPanel: React.FC = () => {
         );
 
         if (product) {
-          const newLinks: PlatformLinks = { 
-            wayfair: '',
-            amazon: '',
-            overstock: '',
-            homeDepot: '',
+          const newLinks: PlatformLinks = {
+            amazon1: '',
+            amazon2: '',
+            wf1: '',
+            wf2: '',
+            os1: '',
+            os2: '',
+            hd1: '',
+            hd2: '',
             lowes: '',
             target: '',
+            walmart: '',
+            ebay: '',
             kohls: ''
           };
-          
+
           PLATFORMS.forEach(platform => {
-            const platformIndex = headers.findIndex(h => 
-              h.includes(platform.key.toLowerCase()) || 
+            const platformIndex = headers.findIndex(h =>
+              h.includes(platform.key.toLowerCase()) ||
               h.includes(platform.label.toLowerCase().replace("'", "").replace(" ", ""))
             );
             if (platformIndex >= 0 && values[platformIndex]) {
@@ -239,9 +269,9 @@ const AdminPanel: React.FC = () => {
   // Download template
   const downloadTemplate = () => {
     const headers = ['SKU', ...PLATFORMS.map(p => p.label)];
-    const sampleData = ['ABC123', 'https://wayfair.com/...', 'https://amazon.com/...', '', '', '', '', ''];
+    const sampleData = ['ABC123', 'https://amazon.com/...', 'https://amazon.com/...', 'https://wayfair.com/...', 'https://wayfair.com/...', 'https://overstock.com/...', 'https://overstock.com/...', 'https://homedepot.com/...', 'https://homedepot.com/...', 'https://lowes.com/...', 'https://target.com/...', 'https://walmart.com/...', 'https://ebay.com/...', 'https://kohls.com/...'];
     const template = [headers.join(','), sampleData.join(',')].join('\n');
-    
+
     const blob = new Blob([template], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -386,8 +416,8 @@ const AdminPanel: React.FC = () => {
             <textarea
               value={csvData}
               onChange={(e) => setCsvData(e.target.value)}
-              placeholder={`SKU,Wayfair,Amazon,Overstock,Home Depot,Lowe's,Target,Kohl's
-ABC123,https://wayfair.com/...,https://amazon.com/...,...`}
+              placeholder={`SKU,Amazon 1,Amazon 2,WF 1,WF 2,OS 1,OS 2,HD 1,HD 2,Lowe's,Target,Walmart,Ebay,Kohl's
+ABC123,https://amazon.com/...,https://amazon.com/...,https://wayfair.com/...,...`}
               className="csv-textarea"
               rows={15}
               disabled={isLoading}

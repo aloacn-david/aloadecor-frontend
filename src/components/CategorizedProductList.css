@@ -246,6 +246,29 @@
   border-color: #a30f28;
 }
 
+/* Walmart - Blue */
+.platform-link.active.walmart {
+  background-color: #0071ce;
+  color: #fff;
+  border: 1px solid #0071ce;
+}
+
+.platform-link.active.walmart:hover {
+  background-color: #005bb5;
+  border-color: #005bb5;
+}
+
+/* Ebay - Red/Blue */
+.platform-link.active.ebay {
+  background: linear-gradient(135deg, #e53238 0%, #0064d2 100%);
+  color: #fff;
+  border: 1px solid #e53238;
+}
+
+.platform-link.active.ebay:hover {
+  opacity: 0.9;
+}
+
 /* Inactive state - all platforms use the same gray style */
 .platform-link.inactive {
   background-color: #e5e5e5;
