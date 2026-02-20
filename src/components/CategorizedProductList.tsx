@@ -32,16 +32,11 @@ const CategorizedProductList: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        console.log('[CategorizedProductList] Fetching products and platform links...');
         const shopifyService = new ShopifyService();
         const [products, platformLinksData] = await Promise.all([
           shopifyService.fetchProducts(),
           getAllPlatformLinks()
         ]);
-        
-        console.log('[CategorizedProductList] Products fetched:', products.length);
-        console.log('[CategorizedProductList] Platform links data:', platformLinksData);
-        console.log('[CategorizedProductList] Platform links keys:', Object.keys(platformLinksData));
         
         // Merge products with platform links from backend
         // Convert product.id to string to match platformLinksData keys
@@ -62,16 +57,12 @@ const CategorizedProductList: React.FC = () => {
             ebay: '',
             kohls: ''
           };
-          if (platformLinksData[productIdStr]) {
-            console.log(`[CategorizedProductList] Found links for product ${productIdStr}:`, links);
-          }
           return {
             ...product,
             platformLinks: links
           };
         });
         
-        console.log('[CategorizedProductList] Products with links:', productsWithLinks.slice(0, 3));
         setProducts(productsWithLinks);
         
         // Extract unique categories
