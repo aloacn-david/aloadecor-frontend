@@ -22,6 +22,7 @@ const PLATFORMS = [
 ] as const;
 
 const CategorizedProductList: React.FC = () => {
+  console.log('[DEBUG] CategorizedProductList component mounted');
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -37,6 +38,9 @@ const CategorizedProductList: React.FC = () => {
           shopifyService.fetchProducts(),
           getAllPlatformLinks()
         ]);
+        
+        console.log('[DEBUG] Shopify products received:', products.length);
+        console.log('[DEBUG] Platform links data received:', Object.keys(platformLinksData).length, 'products');
         
         // Merge products with platform links from backend
         // Convert product.id to string to match platformLinksData keys
@@ -57,6 +61,12 @@ const CategorizedProductList: React.FC = () => {
             ebay: '',
             kohls: ''
           };
+          
+          // Debug specific product if it has links
+          if (Object.values(links).some(link => link !== '')) {
+            console.log('[DEBUG] Product has platform links:', product.id, product.title, links);
+          }
+          
           return {
             ...product,
             platformLinks: links
