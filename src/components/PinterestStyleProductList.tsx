@@ -77,44 +77,84 @@ const PinterestStyleProductList: React.FC = () => {
               <div className="platform-links-section">
                 <h4 className="links-title">Available on:</h4>
                 <div className="platform-links-grid">
-                  {product.platformLinks.wayfair && (
+                  {product.platformLinks.amazon1 && (
                     <a 
-                      href={product.platformLinks.wayfair} 
+                      href={product.platformLinks.amazon1} 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="platform-link"
                     >
-                      <div className="platform-badge wayfair">Wayfair</div>
+                      <div className="platform-badge amazon">Amazon 1</div>
                     </a>
                   )}
-                  {product.platformLinks.amazon && (
+                  {product.platformLinks.amazon2 && (
                     <a 
-                      href={product.platformLinks.amazon} 
+                      href={product.platformLinks.amazon2} 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="platform-link"
                     >
-                      <div className="platform-badge amazon">Amazon</div>
+                      <div className="platform-badge amazon">Amazon 2</div>
                     </a>
                   )}
-                  {product.platformLinks.overstock && (
+                  {product.platformLinks.wf1 && (
                     <a 
-                      href={product.platformLinks.overstock} 
+                      href={product.platformLinks.wf1} 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="platform-link"
                     >
-                      <div className="platform-badge overstock">Overstock</div>
+                      <div className="platform-badge wayfair">WF 1</div>
                     </a>
                   )}
-                  {product.platformLinks.homeDepot && (
+                  {product.platformLinks.wf2 && (
                     <a 
-                      href={product.platformLinks.homeDepot} 
+                      href={product.platformLinks.wf2} 
                       target="_blank" 
                       rel="noopener noreferrer" 
                       className="platform-link"
                     >
-                      <div className="platform-badge homedepot">Home Depot</div>
+                      <div className="platform-badge wayfair">WF 2</div>
+                    </a>
+                  )}
+                  {product.platformLinks.os1 && (
+                    <a 
+                      href={product.platformLinks.os1} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="platform-link"
+                    >
+                      <div className="platform-badge overstock">OS 1</div>
+                    </a>
+                  )}
+                  {product.platformLinks.os2 && (
+                    <a 
+                      href={product.platformLinks.os2} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="platform-link"
+                    >
+                      <div className="platform-badge overstock">OS 2</div>
+                    </a>
+                  )}
+                  {product.platformLinks.hd1 && (
+                    <a 
+                      href={product.platformLinks.hd1} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="platform-link"
+                    >
+                      <div className="platform-badge homedepot">HD 1</div>
+                    </a>
+                  )}
+                  {product.platformLinks.hd2 && (
+                    <a 
+                      href={product.platformLinks.hd2} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="platform-link"
+                    >
+                      <div className="platform-badge homedepot">HD 2</div>
                     </a>
                   )}
                   {product.platformLinks.lowes && (
@@ -135,6 +175,26 @@ const PinterestStyleProductList: React.FC = () => {
                       className="platform-link"
                     >
                       <div className="platform-badge target">Target</div>
+                    </a>
+                  )}
+                  {product.platformLinks.walmart && (
+                    <a 
+                      href={product.platformLinks.walmart} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="platform-link"
+                    >
+                      <div className="platform-badge walmart">Walmart</div>
+                    </a>
+                  )}
+                  {product.platformLinks.ebay && (
+                    <a 
+                      href={product.platformLinks.ebay} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="platform-link"
+                    >
+                      <div className="platform-badge ebay">Ebay</div>
                     </a>
                   )}
                   {product.platformLinks.kohls && (
