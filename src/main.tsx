@@ -42,3 +42,6 @@ ReactDOM.createRoot(document.getElementById('app')!).render(
     </BrowserRouter>
   </React.StrictMode>,
 );
+// Debug timestamp: Fri Feb 20 15:51:27 CST 2026
+console.log('Debug: Platform links loaded successfully');
+
