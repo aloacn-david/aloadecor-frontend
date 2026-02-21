@@ -53,6 +53,9 @@ const AdminPanel: React.FC = () => {
   const [csvData, setCsvData] = useState('');
   const [uploadMessage, setUploadMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [toastMessage, setToastMessage] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   // Mock admin credentials - in a real app, this would be handled securely
   const ADMIN_CREDENTIALS = {
@@ -155,16 +158,21 @@ const AdminPanel: React.FC = () => {
     });
   };
 
+  const showToast = (message: string, type: 'success' | 'error' | 'info') => {
+    setToastMessage({ message, type });
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
   const handleSaveLinks = async () => {
     if (!editingProduct) return;
 
+    setSaveStatus('saving');
     setIsLoading(true);
+    
     try {
-      // Save to backend API
       const success = await updateProductPlatformLinks(String(editingProduct.id), platformLinks);
       
       if (success) {
-        // Update local state
         const updatedProducts = products.map(product => 
           String(product.id) === String(editingProduct.id) 
             ? { ...product, platformLinks: { ...platformLinks } } 
@@ -173,14 +181,24 @@ const AdminPanel: React.FC = () => {
 
         setProducts(updatedProducts);
         setFilteredProducts(updatedProducts);
-        setEditingProduct(null);
-        alert('Links updated successfully!');
+        setSaveStatus('saved');
+        setLastSaved(new Date());
+        
+        const linksCount = Object.values(platformLinks).filter(link => link.trim() !== '').length;
+        showToast(`✓ 已成功保存 ${linksCount} 个平台链接到数据库！`, 'success');
+        
+        setTimeout(() => {
+          setEditingProduct(null);
+          setSaveStatus('idle');
+        }, 1500);
       } else {
-        alert('Failed to save links. Please try again.');
+        setSaveStatus('error');
+        showToast('✗ 保存失败，请检查网络连接后重试', 'error');
       }
     } catch (error) {
       console.error('Error saving links:', error);
-      alert('Error saving links. Please try again.');
+      setSaveStatus('error');
+      showToast('✗ 保存出错：' + (error instanceof Error ? error.message : '未知错误'), 'error');
     } finally {
       setIsLoading(false);
     }
@@ -251,15 +269,19 @@ const AdminPanel: React.FC = () => {
       const result = await bulkUpdatePlatformLinks(linksToUpdate);
       
       if (result.success) {
-        // Reload products to get updated links
         await loadProductsAndLinks();
-        setUploadMessage(`Successfully updated ${result.updatedCount} products!`);
+        const updatedCount = result.updatedCount || Object.keys(linksToUpdate).length;
+        setUploadMessage('');
         setCsvData('');
+        showToast(`✓ 已成功保存 ${updatedCount} 个产品的平台链接到数据库！`, 'success');
+        setLastSaved(new Date());
       } else {
+        showToast('✗ 批量保存失败，请检查数据格式后重试', 'error');
         setUploadMessage('Failed to update products. Please try again.');
       }
     } catch (error) {
       console.error('Error parsing data:', error);
+      showToast('✗ 数据解析错误，请检查CSV格式', 'error');
       setUploadMessage('Error parsing data. Please check format.');
     } finally {
       setIsLoading(false);
@@ -455,20 +477,50 @@ ABC123,https://amazon.com/...,https://amazon.com/...,https://wayfair.com/...,...
                     [platform.key]: e.target.value
                   })}
                   placeholder={`https://www.${platform.key.toLowerCase()}.com/...`}
-                  disabled={isLoading}
+                  disabled={isLoading || saveStatus === 'saving'}
                 />
               </div>
             ))}
             
+            {saveStatus === 'saved' && lastSaved && (
+              <div className="save-success-indicator">
+                ✓ 已保存到数据库 ({lastSaved.toLocaleTimeString()})
+              </div>
+            )}
+            
+            {saveStatus === 'error' && (
+              <div className="save-error-indicator">
+                ✗ 保存失败，请重试
+              </div>
+            )}
+            
             <div className="modal-actions">
-              <button onClick={handleSaveLinks} className="save-button" disabled={isLoading}>
-                {isLoading ? 'Saving...' : 'Save Changes'}
+              <button 
+                onClick={handleSaveLinks} 
+                className={`save-button ${saveStatus === 'saved' ? 'saved' : ''} ${saveStatus === 'error' ? 'error' : ''}`} 
+                disabled={isLoading || saveStatus === 'saving'}
+              >
+                {saveStatus === 'saving' && (
+                  <>
+                    <span className="spinner"></span>
+                    保存中...
+                  </>
+                )}
+                {saveStatus === 'saved' && '✓ 已保存'}
+                {saveStatus === 'error' && '✗ 重试保存'}
+                {saveStatus === 'idle' && (isLoading ? 'Saving...' : '💾 保存到数据库')}
               </button>
-              <button onClick={handleCancelEdit} className="cancel-button" disabled={isLoading}>
+              <button onClick={handleCancelEdit} className="cancel-button" disabled={isLoading || saveStatus === 'saving'}>
                 Cancel
               </button>
             </div>
           </div>
+        </div>
+      )}
+      
+      {toastMessage && (
+        <div className={`toast-notification ${toastMessage.type}`}>
+          {toastMessage.message}
         </div>
       )}
     </div>
