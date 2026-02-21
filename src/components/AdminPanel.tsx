@@ -79,7 +79,7 @@ const AdminPanel: React.FC = () => {
       // Merge products with platform links from backend
       const productsWithLinks = products.map(product => ({
         ...product,
-        platformLinks: platformLinksData[product.id] || {
+        platformLinks: platformLinksData[String(product.id)] || {
           amazon1: '',
           amazon2: '',
           wf1: '',
@@ -161,12 +161,12 @@ const AdminPanel: React.FC = () => {
     setIsLoading(true);
     try {
       // Save to backend API
-      const success = await updateProductPlatformLinks(editingProduct.id, platformLinks);
+      const success = await updateProductPlatformLinks(String(editingProduct.id), platformLinks);
       
       if (success) {
         // Update local state
         const updatedProducts = products.map(product => 
-          product.id === editingProduct.id 
+          String(product.id) === String(editingProduct.id) 
             ? { ...product, platformLinks: { ...platformLinks } } 
             : product
         );
@@ -243,7 +243,7 @@ const AdminPanel: React.FC = () => {
             }
           });
 
-          linksToUpdate[product.id] = newLinks;
+          linksToUpdate[String(product.id)] = newLinks;
         }
       }
 

@@ -1,5 +1,5 @@
 export interface ShopifyProduct { 
-  id: number; 
+  id: number | string; 
   title: string; 
   description: string;
   images: { src: string }[];
