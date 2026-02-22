@@ -46,7 +46,10 @@ const CategorizedProductList: React.FC = () => {
         // Convert product.id to string to match platformLinksData keys
         const productsWithLinks = products.map(product => {
           const productIdStr = String(product.id);
-          const links = platformLinksData[productIdStr] || {
+          
+          // Use platformLinks from product data first (already merged by backend)
+          // Only use platformLinksData if product doesn't have platformLinks
+          const links = product.platformLinks || platformLinksData[productIdStr] || {
             amazon1: '',
             amazon2: '',
             wf1: '',
@@ -62,10 +65,13 @@ const CategorizedProductList: React.FC = () => {
             kohls: ''
           };
           
-          // Debug specific product if it has links
-          if (Object.values(links).some(link => link !== '')) {
-            console.log('[DEBUG] Product has platform links:', product.id, product.title, links);
-          }
+          // Debug: log all products with their links
+          console.log('[DEBUG] Product:', product.id, product.title);
+          console.log('[DEBUG] Platform links:', links);
+          console.log('[DEBUG] Has Amazon 1:', !!links.amazon1, links.amazon1);
+          console.log('[DEBUG] Has Amazon 2:', !!links.amazon2, links.amazon2);
+          console.log('[DEBUG] Has WF 1:', !!links.wf1, links.wf1);
+          console.log('[DEBUG] Has WF 2:', !!links.wf2, links.wf2);
           
           return {
             ...product,
