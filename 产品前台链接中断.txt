@@ -846,3 +846,94 @@ API端点测试：
 排查完成时间：2026-02-21
 排查结论：系统正常，所有问题已解决
 ========================================
+
+========================================
+新发现问题及修复（2026-02-21）
+========================================
+
+问题描述：
+用户反馈测试产品只有Lowe's、Target、Kohl's三个平台显示彩色链接，其他平台显示灰色。
+
+问题分析：
+1. 后端API返回的数据正确
+   - /api/shopify/products 返回的产品包含完整的平台链接
+   - /api/platform-links 返回的平台链接数据正确
+   - 所有13个平台链接都有测试数据
+
+2. 前端数据合并逻辑问题
+   - CategorizedProductList.tsx 同时从两个API获取数据
+   - 原代码优先使用 platformLinksData[productIdStr]
+   - 但后端 /api/shopify/products 已经包含了平台链接
+   - 导致数据优先级错误
+
+根本原因：
+前端代码的数据合并逻辑有问题：
+```typescript
+// 错误的逻辑
+const links = platformLinksData[productIdStr] || { ... };
+
+// 问题：
+// 1. 如果 platformLinksData 没有该产品的数据，会返回空对象
+// 2. 忽略了 product.platformLinks（后端已经合并好的数据）
+// 3. 导致部分产品的平台链接丢失
+```
+
+修复方案：
+修改数据合并逻辑，优先使用后端返回的平台链接：
+```typescript
+// 正确的逻辑
+const links = product.platformLinks || platformLinksData[productIdStr] || { ... };
+
+// 优点：
+// 1. 优先使用后端已经合并好的 platformLinks
+// 2. 如果没有，再从 platformLinksData 获取
+// 3. 确保数据不会丢失
+```
+
+修改文件：
+- src/components/CategorizedProductList.tsx
+
+修改内容：
+第50行，将：
+  const links = platformLinksData[productIdStr] || { ... };
+改为：
+  const links = product.platformLinks || platformLinksData[productIdStr] || { ... };
+
+添加调试日志：
+- 记录每个产品的平台链接数据
+- 记录各平台链接的具体值
+- 方便排查问题
+
+提交记录：
+- Commit: 69de87f
+- Message: Fix platform links display - prioritize product.platformLinks from backend API
+
+部署状态：
+- ✅ 前端已推送到 GitHub
+- ✅ Netlify 自动部署中
+
+预期效果：
+修复后，所有13个平台链接都应该正确显示：
+- Amazon 1: 彩色（橙色）
+- Amazon 2: 彩色（橙色）
+- WF 1: 彩色（紫色）
+- WF 2: 彩色（紫色）
+- OS 1: 彩色（红色）
+- OS 2: 彩色（红色）
+- HD 1: 彩色（橙色）
+- HD 2: 彩色（橙色）
+- Lowe's: 彩色（蓝色）
+- Target: 彩色（红色）
+- Walmart: 彩色（蓝色）
+- Ebay: 彩色（渐变色）
+- Kohl's: 彩色（红色）
+
+验证步骤：
+1. 等待 Netlify 部署完成（2-5分钟）
+2. 强制刷新页面（Cmd+Shift+R）
+3. 查看测试产品（ID: 6766447755428）
+4. 确认所有13个平台链接显示为彩色
+5. 打开浏览器控制台，查看调试日志
+6. 测试管理员保存功能
+
+========================================

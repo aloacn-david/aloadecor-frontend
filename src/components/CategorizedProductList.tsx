@@ -29,6 +29,7 @@ const CategorizedProductList: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [debugInfo, setDebugInfo] = useState<string>('');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -72,6 +73,11 @@ const CategorizedProductList: React.FC = () => {
           console.log('[DEBUG] Has Amazon 2:', !!links.amazon2, links.amazon2);
           console.log('[DEBUG] Has WF 1:', !!links.wf1, links.wf1);
           console.log('[DEBUG] Has WF 2:', !!links.wf2, links.wf2);
+          
+          // Debug info for first product with links
+          if (Object.values(links).some(link => link !== '') && !debugInfo) {
+            setDebugInfo(`Product ID: ${product.id}\nPlatform Links: ${JSON.stringify(links, null, 2)}`);
+          }
           
           return {
             ...product,
@@ -123,6 +129,43 @@ const CategorizedProductList: React.FC = () => {
 
   return (
     <div className="product-list-container">
+      {/* Debug Panel */}
+      {debugInfo && (
+        <div style={{
+          position: 'fixed',
+          top: '10px',
+          right: '10px',
+          background: '#f5f5f5',
+          border: '2px solid #333',
+          padding: '10px',
+          borderRadius: '5px',
+          maxWidth: '400px',
+          maxHeight: '300px',
+          overflow: 'auto',
+          fontSize: '12px',
+          fontFamily: 'monospace',
+          zIndex: 9999,
+          whiteSpace: 'pre-wrap'
+        }}>
+          <div style={{ marginBottom: '5px', fontWeight: 'bold' }}>Debug Info:</div>
+          {debugInfo}
+          <button 
+            onClick={() => setDebugInfo('')}
+            style={{
+              marginTop: '10px',
+              padding: '5px 10px',
+              background: '#333',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '3px',
+              cursor: 'pointer'
+            }}
+          >
+            Close
+          </button>
+        </div>
+      )}
+      
       {/* Breadcrumb */}
       <div className="breadcrumb">
         <span>Home</span>
