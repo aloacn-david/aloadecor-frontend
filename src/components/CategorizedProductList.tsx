@@ -22,14 +22,12 @@ const PLATFORMS = [
 ] as const;
 
 const CategorizedProductList: React.FC = () => {
-  console.log('[DEBUG] CategorizedProductList component mounted');
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [debugInfo, setDebugInfo] = useState<string>('');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -39,9 +37,6 @@ const CategorizedProductList: React.FC = () => {
           shopifyService.fetchProducts(),
           getAllPlatformLinks()
         ]);
-        
-        console.log('[DEBUG] Shopify products received:', products.length);
-        console.log('[DEBUG] Platform links data received:', Object.keys(platformLinksData).length, 'products');
         
         // Merge products with platform links from backend
         // Convert product.id to string to match platformLinksData keys
@@ -65,19 +60,6 @@ const CategorizedProductList: React.FC = () => {
             ebay: '',
             kohls: ''
           };
-          
-          // Debug: log all products with their links
-          console.log('[DEBUG] Product:', product.id, product.title);
-          console.log('[DEBUG] Platform links:', links);
-          console.log('[DEBUG] Has Amazon 1:', !!links.amazon1, links.amazon1);
-          console.log('[DEBUG] Has Amazon 2:', !!links.amazon2, links.amazon2);
-          console.log('[DEBUG] Has WF 1:', !!links.wf1, links.wf1);
-          console.log('[DEBUG] Has WF 2:', !!links.wf2, links.wf2);
-          
-          // Debug info for first product with links
-          if (Object.values(links).some(link => link !== '') && !debugInfo) {
-            setDebugInfo(`Product ID: ${product.id}\nPlatform Links: ${JSON.stringify(links, null, 2)}`);
-          }
           
           return {
             ...product,
@@ -129,60 +111,6 @@ const CategorizedProductList: React.FC = () => {
 
   return (
     <div className="product-list-container">
-      {/* Version Info */}
-      <div style={{
-        position: 'fixed',
-        top: '10px',
-        left: '10px',
-        background: '#ffeb3b',
-        border: '2px solid #f57f17',
-        padding: '8px 12px',
-        borderRadius: '5px',
-        fontSize: '12px',
-        fontWeight: 'bold',
-        zIndex: 9999,
-        color: '#333'
-      }}>
-        v2026.02.21-13PLATFORMS
-      </div>
-      
-      {/* Debug Panel */}
-      {debugInfo && (
-        <div style={{
-          position: 'fixed',
-          top: '10px',
-          right: '10px',
-          background: '#f5f5f5',
-          border: '2px solid #333',
-          padding: '10px',
-          borderRadius: '5px',
-          maxWidth: '400px',
-          maxHeight: '300px',
-          overflow: 'auto',
-          fontSize: '12px',
-          fontFamily: 'monospace',
-          zIndex: 9999,
-          whiteSpace: 'pre-wrap'
-        }}>
-          <div style={{ marginBottom: '5px', fontWeight: 'bold' }}>Debug Info:</div>
-          {debugInfo}
-          <button 
-            onClick={() => setDebugInfo('')}
-            style={{
-              marginTop: '10px',
-              padding: '5px 10px',
-              background: '#333',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '3px',
-              cursor: 'pointer'
-            }}
-          >
-            Close
-          </button>
-        </div>
-      )}
-      
       {/* Breadcrumb */}
       <div className="breadcrumb">
         <span>Home</span>
