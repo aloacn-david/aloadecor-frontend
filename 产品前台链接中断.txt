@@ -937,3 +937,47 @@ const links = product.platformLinks || platformLinksData[productIdStr] || { ... 
 6. 测试管理员保存功能
 
 ========================================
+关键发现：用户截图显示只有8个平台（2026-02-21）
+========================================
+
+用户截图分析：
+从用户提供的截图可以看到：
+- 产品显示的平台链接只有8个：Wayfair, Amazon, Overstock, Home Depot, Lowe's, Target, Kohl's
+- 缺少的平台：Walmart, Ebay
+- 平台名称显示为旧格式（Wayfair而不是WF 1/2）
+
+关键发现：
+这说明前端加载的是旧版本的代码！
+
+可能的原因：
+1. Netlify CDN缓存了旧版本
+2. 浏览器缓存了旧版本的JS文件
+3. 部署还未完成
+
+验证方法：
+已添加版本号标识到页面左上角：
+- 新版本会显示："v2026.02.21-13PLATFORMS"
+- 旧版本不会显示这个标识
+
+解决方案：
+1. 强制刷新页面（Cmd+Shift+R 或 Ctrl+Shift+R）
+2. 使用无痕/隐私模式打开网站
+3. 清除浏览器缓存
+4. 等待Netlify完成部署（可能需要5-10分钟）
+
+部署状态：
+- ✅ Commit: 81f7610
+- ✅ Message: Add version info badge to verify deployment - 13 platforms
+- ✅ 已推送到 GitHub
+- ⏳ Netlify 自动部署中
+
+预期效果：
+页面左上角应该显示黄色版本标识："v2026.02.21-13PLATFORMS"
+产品卡片应该显示13个平台链接：
+- Amazon 1, Amazon 2
+- WF 1, WF 2
+- OS 1, OS 2
+- HD 1, HD 2
+- Lowe's, Target, Walmart, Ebay, Kohl's
+
+========================================
