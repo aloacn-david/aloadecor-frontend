@@ -1053,3 +1053,47 @@ const links = product.platformLinks || platformLinksData[productIdStr] || { ... 
 4. 考虑使用其他部署方式（如Vercel）
 
 ========================================
+重大突破：发现Netlify构建失败（2026-02-21）
+========================================
+
+用户提供的截图显示：
+- Deploy failed for aloaproductsfrontpages
+- Deploy failed due to an error in @netlify/plugin-nextjs plugin
+- Error: Your publish directory does not contain expected Next.js build output
+
+关键发现：
+Netlify错误地将项目识别为Next.js项目，但实际是Vite + React项目！
+
+根本原因：
+1. Netlify自动检测到项目使用了React，误判为Next.js
+2. Next.js插件尝试查找Next.js特定的构建输出（如.next目录）
+3. 但Vite构建输出到dist目录，导致构建失败
+4. 因此网站一直停留在旧的成功的构建版本
+
+解决方案：
+1. 在Netlify控制台修改构建设置：
+   - 进入 Site configuration → Build & deploy
+   - 修改Build command: npm run build
+   - 修改Publish directory: dist
+   - 禁用Next.js插件或移除
+
+2. 更新netlify.toml配置：
+   - 明确指定构建命令和输出目录
+   - 禁用Next.js插件
+
+3. 重新部署：
+   - 点击Retry按钮重新部署
+   - 或触发新的构建
+
+已采取的措施：
+- ✅ 更新netlify.toml明确指定Vite构建设置
+- ✅ 提交更改到GitHub
+- ✅ 准备重新部署
+
+下一步操作：
+1. 在Netlify控制台点击"Retry"重新部署
+2. 或进入Build settings修改配置后保存
+3. 等待部署完成
+4. 验证网站是否显示新版本
+
+========================================
