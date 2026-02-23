@@ -129,6 +129,23 @@ const CategorizedProductList: React.FC = () => {
 
   return (
     <div className="product-list-container">
+      {/* Version Info */}
+      <div style={{
+        position: 'fixed',
+        top: '10px',
+        left: '10px',
+        background: '#ffeb3b',
+        border: '2px solid #f57f17',
+        padding: '8px 12px',
+        borderRadius: '5px',
+        fontSize: '12px',
+        fontWeight: 'bold',
+        zIndex: 9999,
+        color: '#333'
+      }}>
+        v2026.02.21-13PLATFORMS
+      </div>
+      
       {/* Debug Panel */}
       {debugInfo && (
         <div style={{
