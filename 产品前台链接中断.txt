@@ -981,3 +981,75 @@ const links = product.platformLinks || platformLinksData[productIdStr] || { ... 
 - Lowe's, Target, Walmart, Ebay, Kohl's
 
 ========================================
+深度排查：发现重复组件问题（2026-02-21）
+========================================
+
+问题分析：
+在排查过程中发现项目中有两个产品列表组件：
+
+1. ProductList.tsx（旧版本）
+   - 位置：src/components/ProductList.tsx
+   - 特点：没有版本号标识
+   - 平台显示：8个平台（Wayfair, Amazon, Overstock, Home Depot, Lowe's, Target, Kohl's）
+   - 状态：已被删除
+
+2. CategorizedProductList.tsx（新版本）
+   - 位置：src/components/CategorizedProductList.tsx
+   - 特点：有版本号标识 "v2026.02.21-13PLATFORMS"
+   - 平台显示：13个平台（Amazon 1/2, WF 1/2, OS 1/2, HD 1/2, Lowe's, Target, Walmart, Ebay, Kohl's）
+   - 状态：当前使用
+
+问题根源：
+虽然 main.tsx 导入的是 CategorizedProductList，但可能由于以下原因导致旧版本被使用：
+1. Netlify构建缓存中保留了旧的 ProductList.tsx
+2. Vite构建时解析到了错误的组件
+3. 组件导入路径混淆
+
+已采取的措施：
+1. ✅ 删除旧的 ProductList.tsx
+2. ✅ 提交更改到 GitHub（Commit: ffdb6f2）
+3. ✅ 添加 netlify.toml 强制清除CDN缓存
+4. ✅ 添加版本号标识用于验证
+
+用户反馈：
+删除旧组件并重新部署后，用户反馈仍然没有变化，看不到左上角的版本号标识。
+
+可能的原因：
+1. Netlify构建失败或使用了缓存
+2. 构建过程中出现错误
+3. 需要手动触发重新部署
+4. 域名DNS缓存
+
+下一步排查计划：
+1. 检查Netlify构建日志
+2. 手动触发重新部署
+3. 检查构建产物
+4. 考虑使用新的部署方式
+
+========================================
+最终问题分析（2026-02-21）
+========================================
+
+问题总结：
+经过多次排查和修复，用户仍然看不到新版本（没有版本号标识，只有8个平台链接）。
+
+已确认的事实：
+1. ✅ GitHub上的代码是正确的（包含13个平台和版本号）
+2. ✅ 已删除旧的 ProductList.tsx
+3. ✅ 已添加 netlify.toml 清除缓存
+4. ✅ 代码已推送到 GitHub
+5. ❌ Netlify部署可能没有成功或使用了缓存
+
+可能的问题：
+1. Netlify构建失败
+2. Netlify使用了构建缓存
+3. 需要手动触发重新部署
+4. 构建配置问题
+
+建议的解决方案：
+1. 登录Netlify控制台手动触发重新部署
+2. 检查Netlify构建日志
+3. 清除Netlify构建缓存
+4. 考虑使用其他部署方式（如Vercel）
+
+========================================
