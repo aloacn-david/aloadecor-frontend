@@ -7,11 +7,6 @@ const Navbar: React.FC = () => {
     <nav className="navbar">
       {/* Top Bar */}
       <div className="navbar-top">
-        <div className="navbar-search-box">
-          <input type="text" placeholder="Search" className="search-input" />
-          <button className="search-button">🔍</button>
-        </div>
-        
         <Link to="/" className="navbar-logo">ALOA DECOR</Link>
         
         <div className="navbar-actions">
