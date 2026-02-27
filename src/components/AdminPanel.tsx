@@ -52,6 +52,7 @@ const AdminPanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'list' | 'bulk'>('list');
   const [csvData, setCsvData] = useState('');
   const [uploadMessage, setUploadMessage] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
@@ -208,10 +209,27 @@ const AdminPanel: React.FC = () => {
     setEditingProduct(null);
   };
 
+  // Handle file selection
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setUploadMessage(`Selected file: ${file.name}`);
+      
+      // Read file content
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const content = event.target?.result as string;
+        setCsvData(content);
+      };
+      reader.readAsText(file);
+    }
+  };
+
   // Handle CSV/Excel bulk upload
   const handleBulkUpload = async () => {
     if (!csvData.trim()) {
-      setUploadMessage('Please enter data');
+      setUploadMessage('Please select a file');
       return;
     }
 
@@ -273,6 +291,7 @@ const AdminPanel: React.FC = () => {
         const updatedCount = result.updatedCount || Object.keys(linksToUpdate).length;
         setUploadMessage('');
         setCsvData('');
+        setSelectedFile(null);
         showToast(`✓ 已成功保存 ${updatedCount} 个产品的平台链接到数据库！`, 'success');
         setLastSaved(new Date());
       } else {
@@ -427,32 +446,34 @@ const AdminPanel: React.FC = () => {
         <div className="bulk-upload-section">
           <h2>Bulk Upload Platform Links</h2>
           <p className="upload-instructions">
-            Upload platform links using CSV format. Required columns: SKU, Wayfair, Amazon, Overstock, Home Depot, Lowe&apos;s, Target, Kohl&apos;s
+            Upload a CSV file with platform links. Required columns: SKU, Amazon 1, Amazon 2, WF 1, WF 2, OS 1, OS 2, HD 1, HD 2, Lowe&apos;s, Target, Walmart, Ebay, Kohl&apos;s
           </p>
           
           <button onClick={downloadTemplate} className="template-button" disabled={isLoading}>
             Download Template
           </button>
 
-          <div className="csv-input-container">
-            <textarea
-              value={csvData}
-              onChange={(e) => setCsvData(e.target.value)}
-              placeholder={`SKU,Amazon 1,Amazon 2,WF 1,WF 2,OS 1,OS 2,HD 1,HD 2,Lowe's,Target,Walmart,Ebay,Kohl's
-ABC123,https://amazon.com/...,https://amazon.com/...,https://wayfair.com/...,...`}
-              className="csv-textarea"
-              rows={15}
+          <div className="file-upload-container">
+            <input
+              type="file"
+              accept=".csv,.txt"
+              onChange={handleFileSelect}
+              className="file-input"
               disabled={isLoading}
+              id="csv-file-input"
             />
+            <label htmlFor="csv-file-input" className="file-input-label">
+              {selectedFile ? `Selected: ${selectedFile.name}` : 'Choose CSV File'}
+            </label>
           </div>
 
           {uploadMessage && (
-            <div className={`upload-message ${uploadMessage.includes('Error') || uploadMessage.includes('Failed') ? 'error' : 'success'}`}>
+            <div className={`upload-message ${uploadMessage.includes('Error') || uploadMessage.includes('Failed') || uploadMessage.includes('Please') ? 'error' : 'success'}`}>
               {uploadMessage}
             </div>
           )}
 
-          <button onClick={handleBulkUpload} className="upload-button" disabled={isLoading}>
+          <button onClick={handleBulkUpload} className="upload-button" disabled={isLoading || !selectedFile}>
             {isLoading ? 'Uploading...' : 'Upload Links'}
           </button>
         </div>
