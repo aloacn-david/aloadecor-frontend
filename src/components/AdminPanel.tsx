@@ -273,9 +273,9 @@ const AdminPanel: React.FC = () => {
         
         console.log(`[Bulk Upload] Line ${i}: SKU=${sku}, Values=`, values);
 
-        // Find product by SKU
+        // Find product by SKU (case-insensitive)
         const product = products.find(p => 
-          p.variants.some(v => v.sku === sku)
+          p.variants.some(v => v.sku && v.sku.toLowerCase() === sku.toLowerCase())
         );
 
         if (product) {
