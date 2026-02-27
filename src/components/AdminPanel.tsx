@@ -348,14 +348,56 @@ const AdminPanel: React.FC = () => {
   // Download template
   const downloadTemplate = () => {
     const headers = ['SKU', ...PLATFORMS.map(p => p.label)];
-    const sampleData = ['ABC123', 'https://amazon.com/...', 'https://amazon.com/...', 'https://wayfair.com/...', 'https://wayfair.com/...', 'https://overstock.com/...', 'https://overstock.com/...', 'https://homedepot.com/...', 'https://homedepot.com/...', 'https://lowes.com/...', 'https://target.com/...', 'https://walmart.com/...', 'https://ebay.com/...', 'https://kohls.com/...'];
-    const template = [headers.join(','), sampleData.join(',')].join('\n');
+    
+    // Build CSV rows from existing products
+    const rows: string[] = [headers.join(',')];
+    
+    products.forEach(product => {
+      const sku = product.variants[0]?.sku || '';
+      if (!sku) return;
+      
+      const links = product.platformLinks || {};
+      const rowData = [
+        sku,
+        links.amazon1 || '',
+        links.amazon2 || '',
+        links.wf1 || '',
+        links.wf2 || '',
+        links.os1 || '',
+        links.os2 || '',
+        links.hd1 || '',
+        links.hd2 || '',
+        links.lowes || '',
+        links.target || '',
+        links.walmart || '',
+        links.ebay || '',
+        links.kohls || ''
+      ];
+      
+      // Escape values that contain commas
+      const escapedRow = rowData.map(val => {
+        if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+          return `"${val.replace(/"/g, '""')}"`;
+        }
+        return val;
+      });
+      
+      rows.push(escapedRow.join(','));
+    });
+    
+    // Add a sample row if no products
+    if (rows.length === 1) {
+      const sampleData = ['ABC123', 'https://amazon.com/...', 'https://amazon.com/...', 'https://wayfair.com/...', 'https://wayfair.com/...', 'https://overstock.com/...', 'https://overstock.com/...', 'https://homedepot.com/...', 'https://homedepot.com/...', 'https://lowes.com/...', 'https://target.com/...', 'https://walmart.com/...', 'https://ebay.com/...', 'https://kohls.com/...'];
+      rows.push(sampleData.join(','));
+    }
+    
+    const template = rows.join('\n');
 
-    const blob = new Blob([template], { type: 'text/csv' });
+    const blob = new Blob([template], { type: 'text/csv;charset=utf-8;' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'platform_links_template.csv';
+    a.download = 'platform_links_export.csv';
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -488,7 +530,7 @@ const AdminPanel: React.FC = () => {
           </p>
           
           <button onClick={downloadTemplate} className="template-button" disabled={isLoading}>
-            Download Template
+            下载现有产品链接表格
           </button>
 
           <div className="file-upload-container">
