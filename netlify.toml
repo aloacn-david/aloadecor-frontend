@@ -5,6 +5,7 @@
 [build.environment]
   NODE_VERSION = "18"
   NETLIFY_BUILD_DEBUG = "true"
+  BUILD_VERSION = "2026-02-27-002"
 
 # 强制清除CDN缓存
 [[headers]]
