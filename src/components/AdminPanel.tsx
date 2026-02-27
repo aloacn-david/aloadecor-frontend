@@ -74,31 +74,48 @@ const AdminPanel: React.FC = () => {
   const loadProductsAndLinks = async () => {
     setIsLoading(true);
     try {
+      console.log('[LoadProducts] Starting to load products and links...');
       const shopifyService = new ShopifyService();
       const [products, platformLinksData] = await Promise.all([
         shopifyService.fetchProducts(),
         getAllPlatformLinks()
       ]);
       
+      console.log('[LoadProducts] Fetched', products.length, 'products from Shopify');
+      console.log('[LoadProducts] Fetched platform links for', Object.keys(platformLinksData).length, 'products');
+      console.log('[LoadProducts] Platform links data:', platformLinksData);
+      
       // Merge products with platform links from backend
-      const productsWithLinks = products.map(product => ({
-        ...product,
-        platformLinks: platformLinksData[String(product.id)] || {
-          amazon1: '',
-          amazon2: '',
-          wf1: '',
-          wf2: '',
-          os1: '',
-          os2: '',
-          hd1: '',
-          hd2: '',
-          lowes: '',
-          target: '',
-          walmart: '',
-          ebay: '',
-          kohls: ''
+      const productsWithLinks = products.map(product => {
+        const productId = String(product.id);
+        const links = platformLinksData[productId];
+        if (links) {
+          console.log(`[LoadProducts] Product ${productId} (${product.title}) has links:`, links);
         }
-      }));
+        return {
+          ...product,
+          platformLinks: links || {
+            amazon1: '',
+            amazon2: '',
+            wf1: '',
+            wf2: '',
+            os1: '',
+            os2: '',
+            hd1: '',
+            hd2: '',
+            lowes: '',
+            target: '',
+            walmart: '',
+            ebay: '',
+            kohls: ''
+          }
+        };
+      });
+      
+      const productsWithActiveLinks = productsWithLinks.filter(p => 
+        Object.values(p.platformLinks || {}).some(link => link && link.trim() !== '')
+      );
+      console.log('[LoadProducts]', productsWithActiveLinks.length, 'products have active links');
       
       setProducts(productsWithLinks);
       setFilteredProducts(productsWithLinks);
