@@ -40,6 +40,10 @@ const CategorizedProductList: React.FC = () => {
         
         // Merge products with platform links from backend
         // Convert product.id to string to match platformLinksData keys
+        console.log('[CategorizedProductList] Fetched', products.length, 'products');
+        console.log('[CategorizedProductList] Platform links data:', platformLinksData);
+        console.log('[CategorizedProductList] Platform links product IDs:', Object.keys(platformLinksData));
+        
         const productsWithLinks = products.map(product => {
           const productIdStr = String(product.id);
           
@@ -61,11 +65,21 @@ const CategorizedProductList: React.FC = () => {
             kohls: ''
           };
           
+          // Debug: log products that have links in platformLinksData
+          if (platformLinksData[productIdStr]) {
+            console.log(`[CategorizedProductList] Product ${productIdStr} (${product.title}) has links:`, platformLinksData[productIdStr]);
+          }
+          
           return {
             ...product,
             platformLinks: links
           };
         });
+        
+        const productsWithActiveLinks = productsWithLinks.filter(p => 
+          Object.values(p.platformLinks || {}).some(link => link && link.trim() !== '')
+        );
+        console.log('[CategorizedProductList]', productsWithActiveLinks.length, 'products have active links');
         
         setProducts(productsWithLinks);
         
