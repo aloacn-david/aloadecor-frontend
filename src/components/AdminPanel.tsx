@@ -236,16 +236,25 @@ const AdminPanel: React.FC = () => {
     setIsLoading(true);
     try {
       const lines = csvData.trim().split('\n');
-      const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+      const headers = lines[0].split(',').map(h => h.trim());
+      
+      console.log('[Bulk Upload] CSV Headers:', headers);
+      console.log('[Bulk Upload] Total lines:', lines.length);
       
       const linksToUpdate: Record<string, PlatformLinks> = {};
+      let matchedProducts = 0;
+      let unmatchedSkus: string[] = [];
 
       for (let i = 1; i < lines.length; i++) {
         const values = lines[i].split(',').map(v => v.trim());
         if (values.length < 2) continue;
 
-        const skuIndex = headers.findIndex(h => h.includes('sku') || h.includes('id'));
+        const skuIndex = headers.findIndex(h => 
+          h.toLowerCase().includes('sku') || h.toLowerCase().includes('id')
+        );
         const sku = skuIndex >= 0 ? values[skuIndex] : values[0];
+        
+        console.log(`[Bulk Upload] Line ${i}: SKU=${sku}, Values=`, values);
 
         // Find product by SKU
         const product = products.find(p => 
@@ -253,6 +262,9 @@ const AdminPanel: React.FC = () => {
         );
 
         if (product) {
+          matchedProducts++;
+          console.log(`[Bulk Upload] Found product: ${product.title} (ID: ${product.id})`);
+          
           const newLinks: PlatformLinks = {
             amazon1: '',
             amazon2: '',
@@ -273,19 +285,20 @@ const AdminPanel: React.FC = () => {
             const platformKey = platform.key.toLowerCase();
             const platformLabel = platform.label.toLowerCase().replace(/['\s]/g, '');
             
-            const platformIndex = headers.findIndex(h => {
+            const platformIndex = headers.findIndex((h, idx) => {
               const header = h.toLowerCase().trim();
+              const headerClean = header.replace(/['\s]/g, '');
+              
               // Match by key (e.g., "amazon1", "wf1")
-              if (header === platformKey || header.includes(platformKey)) return true;
+              if (headerClean === platformKey || headerClean.includes(platformKey)) {
+                console.log(`[Bulk Upload] Matched ${platform.key} at column ${idx}: "${h}" -> "${values[idx]}"`);
+                return true;
+              }
               // Match by label (e.g., "amazon1", "wf1", "lowes")
-              if (header === platformLabel || header.includes(platformLabel)) return true;
-              // Special cases for abbreviated labels
-              if (platform.key === 'wf1' && (header.includes('wayfair1') || header.includes('wf1'))) return true;
-              if (platform.key === 'wf2' && (header.includes('wayfair2') || header.includes('wf2'))) return true;
-              if (platform.key === 'os1' && (header.includes('overstock1') || header.includes('os1'))) return true;
-              if (platform.key === 'os2' && (header.includes('overstock2') || header.includes('os2'))) return true;
-              if (platform.key === 'hd1' && (header.includes('homedepot1') || header.includes('hd1') || header.includes('home depot 1'))) return true;
-              if (platform.key === 'hd2' && (header.includes('homedepot2') || header.includes('hd2') || header.includes('home depot 2'))) return true;
+              if (headerClean === platformLabel || headerClean.includes(platformLabel)) {
+                console.log(`[Bulk Upload] Matched ${platform.key} at column ${idx}: "${h}" -> "${values[idx]}"`);
+                return true;
+              }
               return false;
             });
             
@@ -295,8 +308,15 @@ const AdminPanel: React.FC = () => {
           });
 
           linksToUpdate[String(product.id)] = newLinks;
+          console.log(`[Bulk Upload] Links for ${sku}:`, newLinks);
+        } else {
+          unmatchedSkus.push(sku);
+          console.log(`[Bulk Upload] Product not found for SKU: ${sku}`);
         }
       }
+      
+      console.log(`[Bulk Upload] Matched ${matchedProducts} products`);
+      console.log(`[Bulk Upload] Unmatched SKUs:`, unmatchedSkus);
 
       // Bulk update via API
       const result = await bulkUpdatePlatformLinks(linksToUpdate);
