@@ -189,6 +189,11 @@ const CategorizedProductList: React.FC = () => {
                   const link = product.platformLinks?.[platform.key as keyof typeof product.platformLinks];
                   const hasLink = link && link.trim() !== '';
                   
+                  // Debug: log link status for each platform
+                  if (link && link.trim() !== '') {
+                    console.log(`[ProductCard] ${product.title} - ${platform.label}: ${link}`);
+                  }
+                  
                   return hasLink ? (
                     <a 
                       key={platform.key}
