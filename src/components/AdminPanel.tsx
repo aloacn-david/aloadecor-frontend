@@ -270,10 +270,25 @@ const AdminPanel: React.FC = () => {
           };
 
           PLATFORMS.forEach(platform => {
-            const platformIndex = headers.findIndex(h =>
-              h.includes(platform.key.toLowerCase()) ||
-              h.includes(platform.label.toLowerCase().replace("'", "").replace(" ", ""))
-            );
+            const platformKey = platform.key.toLowerCase();
+            const platformLabel = platform.label.toLowerCase().replace(/['\s]/g, '');
+            
+            const platformIndex = headers.findIndex(h => {
+              const header = h.toLowerCase().trim();
+              // Match by key (e.g., "amazon1", "wf1")
+              if (header === platformKey || header.includes(platformKey)) return true;
+              // Match by label (e.g., "amazon1", "wf1", "lowes")
+              if (header === platformLabel || header.includes(platformLabel)) return true;
+              // Special cases for abbreviated labels
+              if (platform.key === 'wf1' && (header.includes('wayfair1') || header.includes('wf1'))) return true;
+              if (platform.key === 'wf2' && (header.includes('wayfair2') || header.includes('wf2'))) return true;
+              if (platform.key === 'os1' && (header.includes('overstock1') || header.includes('os1'))) return true;
+              if (platform.key === 'os2' && (header.includes('overstock2') || header.includes('os2'))) return true;
+              if (platform.key === 'hd1' && (header.includes('homedepot1') || header.includes('hd1') || header.includes('home depot 1'))) return true;
+              if (platform.key === 'hd2' && (header.includes('homedepot2') || header.includes('hd2') || header.includes('home depot 2'))) return true;
+              return false;
+            });
+            
             if (platformIndex >= 0 && values[platformIndex]) {
               newLinks[platform.key as keyof PlatformLinks] = values[platformIndex];
             }
@@ -289,6 +304,9 @@ const AdminPanel: React.FC = () => {
       if (result.success) {
         await loadProductsAndLinks();
         const updatedCount = result.updatedCount || Object.keys(linksToUpdate).length;
+        const productIds = Object.keys(linksToUpdate);
+        console.log('[Bulk Upload] Successfully updated products:', productIds);
+        console.log('[Bulk Upload] Links data:', linksToUpdate);
         setUploadMessage('');
         setCsvData('');
         setSelectedFile(null);
