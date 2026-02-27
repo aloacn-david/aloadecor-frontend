@@ -423,7 +423,7 @@ const AdminPanel: React.FC = () => {
     return (
       <div className="admin-login">
         <div className="login-container">
-          <h2>Admin Login</h2>
+          <h2>Admin Login v2.1</h2>
           {loginError && <div className="error-message">{loginError}</div>}
           <form onSubmit={handleLogin}>
             <div className="form-group">
