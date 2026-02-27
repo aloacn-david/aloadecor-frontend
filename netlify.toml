@@ -4,6 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  NETLIFY_BUILD_DEBUG = "true"
 
 # 强制清除CDN缓存
 [[headers]]
@@ -24,3 +25,21 @@
   for = "*.js"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Netlify Build Settings
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = true
+  minify = true
+
+[build.processing.js]
+  bundle = true
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+[build.processing.images]
+  compress = true
