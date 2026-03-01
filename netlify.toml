@@ -7,6 +7,13 @@
   NETLIFY_BUILD_DEBUG = "true"
   BUILD_VERSION = "2026-02-27-002"
 
+# 强制 HTTPS 重定向
+[[redirects]]
+  from = "http://*"
+  to = "https://:splat"
+  status = 301
+  force = true
+
 # 强制清除CDN缓存
 [[headers]]
   for = "/*"
