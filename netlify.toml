@@ -4,8 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "18"
-  NETLIFY_BUILD_DEBUG = "true"
-  BUILD_VERSION = "2026-02-27-002"
+  BUILD_VERSION = "2026-03-02-001"
 
 # 强制 HTTPS 重定向
 [[redirects]]
@@ -14,27 +13,46 @@
   status = 301
   force = true
 
-# 强制清除CDN缓存
+# 优化缓存策略 - 静态资源长期缓存
 [[headers]]
-  for = "/*"
+  for = "/assets/*"
   [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-    Pragma = "no-cache"
-    Expires = "0"
+    Cache-Control = "public, max-age=31536000, immutable"
 
-# 确保HTML文件不被缓存
-[[headers]]
-  for = "*.html"
-  [headers.values]
-    Cache-Control = "no-cache, no-store, must-revalidate"
-
-# 确保JS文件使用正确的缓存策略
+# JS/CSS 文件缓存1年（因为它们有hash）
 [[headers]]
   for = "*.js"
   [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# 图片缓存30天
+[[headers]]
+  for = "*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "*.jpg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+# HTML 文件不缓存（确保获取最新版本）
+[[headers]]
+  for = "*.html"
+  [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Netlify Build Settings
+# Netlify Build Settings - 优化构建
 [build.processing]
   skip_processing = false
 
