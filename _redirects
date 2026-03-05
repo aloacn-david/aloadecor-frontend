@@ -1,0 +1,8 @@
+# 强制 HTTPS 重定向
+http://*/* https://:splat 301
+
+# 主页面重定向
+/ /index.html 200
+
+# 404 页面
+/* /404.html 404
