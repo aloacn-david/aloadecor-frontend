@@ -8,6 +8,12 @@ import {
 } from '../services/platformLinks';
 import './AdminPanel.css';
 
+interface AdminPanelProps {
+  onLinksUpdated: () => void;
+}
+
+const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
+
 // Platform configuration
 const PLATFORMS = [
   { key: 'amazon1', label: 'Amazon 1' },
@@ -202,6 +208,9 @@ const AdminPanel: React.FC = () => {
         setSaveStatus('saved');
         setLastSaved(new Date());
         
+        // 通知 App 组件更新产品数据
+        onLinksUpdated();
+        
         const linksCount = Object.values(platformLinks).filter(link => link.trim() !== '').length;
         showToast(`✓ 已成功保存 ${linksCount} 个平台链接到数据库！`, 'success');
         
@@ -364,6 +373,9 @@ const AdminPanel: React.FC = () => {
         setSelectedFile(null);
         showToast(`✓ 已成功保存 ${updatedCount} 个产品的平台链接到数据库！`, 'success');
         setLastSaved(new Date());
+        
+        // 通知 App 组件更新产品数据
+        onLinksUpdated();
       } else {
         showToast('✗ 批量保存失败，请检查数据格式后重试', 'error');
         setUploadMessage('Failed to update products. Please try again.');

@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShopifyService } from '../services/shopify';
 import { ShopifyProduct } from '../types/shopify';
-import { getAllPlatformLinks } from '../services/platformLinks';
 import './CategorizedProductList.css';
 
 // Platform configuration - all available platforms with brand colors
@@ -21,82 +19,35 @@ const PLATFORMS = [
   { key: 'kohls', label: "Kohl's", colorClass: 'kohls' },
 ] as const;
 
-const CategorizedProductList: React.FC = () => {
-  const [products, setProducts] = useState<ShopifyProduct[]>([]);
+interface CategorizedProductListProps {
+  products: ShopifyProduct[];
+  onRefresh: () => void;
+}
+
+const CategorizedProductList: React.FC<CategorizedProductListProps> = ({ products, onRefresh }) => {
   const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const shopifyService = new ShopifyService();
-        const [products, platformLinksData] = await Promise.all([
-          shopifyService.fetchProducts(),
-          getAllPlatformLinks()
-        ]);
-        
-        // Merge products with platform links from backend
-        // Convert product.id to string to match platformLinksData keys
-        console.log('[CategorizedProductList] Fetched', products.length, 'products');
-        console.log('[CategorizedProductList] Platform links data:', platformLinksData);
-        console.log('[CategorizedProductList] Platform links product IDs:', Object.keys(platformLinksData));
-        
-        const productsWithLinks = products.map(product => {
-          const productIdStr = String(product.id);
-          
-          // Use platformLinks from product data first (already merged by backend)
-          // Only use platformLinksData if product doesn't have platformLinks
-          const links = product.platformLinks || platformLinksData[productIdStr] || {
-            amazon1: '',
-            amazon2: '',
-            wf1: '',
-            wf2: '',
-            os1: '',
-            os2: '',
-            hd1: '',
-            hd2: '',
-            lowes: '',
-            target: '',
-            walmart: '',
-            ebay: '',
-            kohls: ''
-          };
-          
-          // Debug: log products that have links in platformLinksData
-          if (platformLinksData[productIdStr]) {
-            console.log(`[CategorizedProductList] Product ${productIdStr} (${product.title}) has links:`, platformLinksData[productIdStr]);
-          }
-          
-          return {
-            ...product,
-            platformLinks: links
-          };
-        });
-        
-        const productsWithActiveLinks = productsWithLinks.filter(p => 
-          Object.values(p.platformLinks || {}).some(link => link && link.trim() !== '')
-        );
-        console.log('[CategorizedProductList]', productsWithActiveLinks.length, 'products have active links');
-        
-        setProducts(productsWithLinks);
-        
-        // Extract unique categories
-        const uniqueCategories = [...new Set(productsWithLinks.map(p => p.category))];
-        setCategories(['All', ...uniqueCategories.sort()]);
-        
-        setFilteredProducts(productsWithLinks);
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+    if (products.length > 0) {
+      console.log('[CategorizedProductList] Received', products.length, 'products from App');
+      
+      // Check products with active links
+      const productsWithActiveLinks = products.filter(p => 
+        Object.values(p.platformLinks || {}).some(link => link && link.trim() !== '')
+      );
+      console.log('[CategorizedProductList]', productsWithActiveLinks.length, 'products have active links');
+      
+      // Extract unique categories
+      const uniqueCategories = [...new Set(products.map(p => p.category))];
+      setCategories(['All', ...uniqueCategories.sort()]);
+      
+      setFilteredProducts(products);
+    }
+  }, [products]);
 
   useEffect(() => {
     let result = products;
