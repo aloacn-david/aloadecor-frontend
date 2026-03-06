@@ -12,8 +12,8 @@ export class ShopifyService {
 
     try {
       console.log('Fetching products from backend proxy...');
-      // Use environment variable for API URL or fallback to localhost
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+      // Use environment variable for API URL or fallback to production backend
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://aloadecor-backend-production.up.railway.app';
       const response = await fetch(`${apiUrl}/api/shopify/products`);
       
       if (!response.ok) {
