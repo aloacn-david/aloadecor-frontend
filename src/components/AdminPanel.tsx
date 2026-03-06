@@ -230,6 +230,18 @@ const AdminPanel: React.FC = () => {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // 检查文件大小（限制为 10MB）
+      if (file.size > 10 * 1024 * 1024) {
+        setUploadMessage('File too large. Please upload files smaller than 10MB.');
+        return;
+      }
+      
+      // 检查文件类型
+      if (!file.name.endsWith('.csv') && !file.name.endsWith('.txt')) {
+        setUploadMessage('Please upload a CSV or TXT file.');
+        return;
+      }
+      
       setSelectedFile(file);
       setUploadMessage(`Selected file: ${file.name}`);
       
@@ -238,6 +250,9 @@ const AdminPanel: React.FC = () => {
       reader.onload = (event) => {
         const content = event.target?.result as string;
         setCsvData(content);
+      };
+      reader.onerror = () => {
+        setUploadMessage('Error reading file. Please try again.');
       };
       reader.readAsText(file);
     }
