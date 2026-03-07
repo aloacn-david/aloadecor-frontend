@@ -8,12 +8,6 @@ import {
 } from '../services/platformLinks';
 import './AdminPanel.css';
 
-interface AdminPanelProps {
-  onLinksUpdated: () => void;
-}
-
-const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
-
 // Platform configuration
 const PLATFORMS = [
   { key: 'amazon1', label: 'Amazon 1' },
@@ -31,7 +25,11 @@ const PLATFORMS = [
   { key: 'kohls', label: "Kohl's" },
 ] as const;
 
-const AdminPanel: React.FC = () => {
+interface AdminPanelProps {
+  onLinksUpdated: () => void;
+}
+
+const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
   const [searchTerm, setSearchTerm] = useState('');

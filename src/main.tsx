@@ -61,6 +61,13 @@ const App: React.FC = () => {
     loadProducts();
   }, []);
 
+  // 处理切换到产品页面
+  const handleViewProducts = async () => {
+    setCurrentView('products');
+    // 切换到产品页面时重新加载数据
+    await loadProducts();
+  };
+
   return (
     <div className="app">
       <Navbar />
@@ -68,11 +75,7 @@ const App: React.FC = () => {
       <div className="view-toggle">
         <button 
           className={`view-button ${currentView === 'products' ? 'active' : ''}`}
-          onClick={() => {
-            setCurrentView('products');
-            // 切换到产品页面时重新加载数据
-            loadProducts();
-          }}
+          onClick={handleViewProducts}
         >
           View Products
         </button>
