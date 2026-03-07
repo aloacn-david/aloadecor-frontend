@@ -24,11 +24,10 @@ interface CategorizedProductListProps {
   onRefresh: () => void;
 }
 
-const CategorizedProductList: React.FC<CategorizedProductListProps> = ({ products, onRefresh }) => {
+const CategorizedProductList: React.FC<CategorizedProductListProps> = ({ products }) => {
   const [filteredProducts, setFilteredProducts] = useState<ShopifyProduct[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -70,7 +69,7 @@ const CategorizedProductList: React.FC<CategorizedProductListProps> = ({ product
     setFilteredProducts(result);
   }, [selectedCategory, searchTerm, products]);
 
-  if (loading) {
+  if (products.length === 0) {
     return <div className="loading">Loading products...</div>;
   }
 

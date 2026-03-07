@@ -14,7 +14,6 @@ import { getAllPlatformLinks } from './services/platformLinks';
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<'products' | 'admin'>('products');
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   // 加载产品和平台链接数据
   const loadProducts = async () => {
@@ -50,7 +49,6 @@ const App: React.FC = () => {
       });
       
       setProducts(productsWithLinks);
-      setLastUpdated(new Date());
     } catch (error) {
       console.error('Error loading products:', error);
     }
