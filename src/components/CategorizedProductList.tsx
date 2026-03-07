@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShopifyProduct } from '../types/shopify';
+import { ShopifyProduct, PlatformLinks } from '../types/shopify';
 import './CategorizedProductList.css';
 
 // Platform configuration - all available platforms with brand colors
@@ -136,7 +136,7 @@ const CategorizedProductList: React.FC<CategorizedProductListProps> = ({ product
               )}
               <div className="platform-links">
                 {PLATFORMS.map((platform) => {
-                  const link = product.platformLinks?.[platform.key as keyof typeof product.platformLinks];
+                  const link = product.platformLinks?.[platform.key as keyof PlatformLinks];
                   const hasLink = link && link.trim() !== '';
                   
                   // Debug: log link status for each platform

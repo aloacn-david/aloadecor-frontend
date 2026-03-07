@@ -538,7 +538,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
                     
                     <div className="platform-links-status">
                       {PLATFORMS.map(platform => {
-                        const hasLink = product.platformLinks?.[platform.key as keyof PlatformLinks];
+                        const link = product.platformLinks?.[platform.key as keyof PlatformLinks];
+                        const hasLink = link && link.trim() !== '';
                         return (
                           <span 
                             key={platform.key} 
