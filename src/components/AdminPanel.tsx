@@ -361,7 +361,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
       const result = await bulkUpdatePlatformLinks(linksToUpdate);
       
       if (result.success) {
-        await loadProductsAndLinks();
         const updatedCount = result.updatedCount || Object.keys(linksToUpdate).length;
         const productIds = Object.keys(linksToUpdate);
         console.log('[Bulk Upload] Successfully updated products:', productIds);
@@ -374,6 +373,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
         
         // 通知 App 组件更新产品数据
         onLinksUpdated();
+        
+        // 不需要调用 loadProductsAndLinks，因为 onLinksUpdated 会重新加载数据
       } else {
         showToast('✗ 批量保存失败，请检查数据格式后重试', 'error');
         setUploadMessage('Failed to update products. Please try again.');

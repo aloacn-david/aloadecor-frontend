@@ -24,10 +24,13 @@ const App: React.FC = () => {
         getAllPlatformLinks()
       ]);
       
-      // 合并产品与平台链接
+      console.log('[loadProducts] Fetched platform links:', Object.keys(platformLinksData).length, 'products');
+      
+      // 合并产品与平台链接 - 优先使用从数据库获取的平台链接
       const productsWithLinks = products.map(product => {
         const productIdStr = String(product.id);
-        const links = product.platformLinks || platformLinksData[productIdStr] || {
+        // 优先使用平台链接数据，而不是产品自带的链接
+        const links = platformLinksData[productIdStr] || product.platformLinks || {
           amazon1: '',
           amazon2: '',
           wf1: '',
@@ -42,11 +45,24 @@ const App: React.FC = () => {
           ebay: '',
           kohls: ''
         };
+        
+        // 检查是否有活跃链接
+        const hasActiveLinks = Object.values(links).some(link => link && link.trim() !== '');
+        if (hasActiveLinks) {
+          console.log(`[loadProducts] Product ${productIdStr} (${product.title}) has active links`);
+        }
+        
         return {
           ...product,
           platformLinks: links
         };
       });
+      
+      // 检查有活跃链接的产品数量
+      const productsWithActiveLinks = productsWithLinks.filter(p => 
+        Object.values(p.platformLinks || {}).some(link => link && link.trim() !== '')
+      );
+      console.log('[loadProducts]', productsWithActiveLinks.length, 'products have active links');
       
       setProducts(productsWithLinks);
     } catch (error) {
