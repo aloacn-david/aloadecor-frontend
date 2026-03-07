@@ -140,9 +140,7 @@ const CategorizedProductList: React.FC<CategorizedProductListProps> = ({ product
                   const hasLink = link && link.trim() !== '';
                   
                   // Debug: log link status for each platform
-                  if (link && link.trim() !== '') {
-                    console.log(`[ProductCard] ${product.title} - ${platform.label}: ${link}`);
-                  }
+                  console.log(`[ProductCard] ${product.title} - ${platform.label}: link="${link}", hasLink=${hasLink}`);
                   
                   return hasLink ? (
                     <a 
