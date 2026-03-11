@@ -1,0 +1,108 @@
+TASK: AdminPanel bug tracking
+
+STATUS: OPEN
+
+CURRENT_PROBLEM:
+AdminPanel.tsx 之前存在重复组件定义问题，需要持续跟踪是否还有其他问题。
+
+ROOT_CAUSE:
+UNKNOWN
+
+WHAT_HAS_BEEN_TRIED:
+
+Attempt 1
+- date: 2026-03-07
+- summary: 删除 AdminPanel 重复组件定义
+- files: src/components/AdminPanel.tsx
+- result: 编译成功
+
+Attempt 2
+- date: 2026-03-07
+- summary: 修复 onLinksUpdated props 类型
+- files: src/components/AdminPanel.tsx
+- result: TypeScript 无错误
+
+Attempt 3
+- date: 2026-03-07
+- summary: 修复 TypeScript 错误和未使用变量
+- files: src/components/CategorizedProductList.tsx, src/main.tsx
+- result: 构建成功
+
+Attempt 4
+- date: 2026-03-07
+- summary: 修复平台链接数据优先级问题
+- files: src/main.tsx
+- result: 平台链接数据优先于 mock 数据
+
+Attempt 5
+- date: 2026-03-07
+- summary: 优化数据加载流程
+- files: src/components/AdminPanel.tsx
+- result: 上传后自动更新前端显示
+
+Attempt 6
+- date: 2026-03-07
+- summary: 修复后端路由顺序问题
+- files: backend/server.js
+- result: 批量更新 API 正确响应
+
+Attempt 7
+- date: 2026-03-07
+- summary: 修复平台链接显示问题
+- files: src/components/CategorizedProductList.tsx, src/components/AdminPanel.tsx
+- result: hd2 之后的链接现在可以正确显示激活状态
+
+Attempt 8
+- date: 2026-03-07
+- summary: 修复平台链接数据加载问题
+- files: src/main.tsx
+- result: 前端直接使用后端返回的平台链接数据
+
+Attempt 9
+- date: 2026-03-07
+- summary: 修复 Admin Panel 中 hd2 之后的链接显示问题
+- files: src/components/AdminPanel.tsx, src/components/AdminPanel.css
+- result: Admin Panel 现在可以正确显示所有平台链接的激活状态
+
+Attempt 10
+- date: 2026-03-09
+- summary: 修复 Admin Panel 数据加载优先级问题
+- files: src/components/AdminPanel.tsx
+- result: 优先使用 Shopify API 返回的平台链接数据，而不是从 platform-links API 获取的数据
+
+Attempt 11
+- date: 2026-03-09
+- summary: 修复 Admin Panel 平台链接显示问题
+- files: src/components/AdminPanel.tsx
+- result: 添加内联样式确保所有平台链接的颜色都能正确显示，同时保留 CSS 样式作为备份
+
+Attempt 12
+- date: 2026-03-09
+- summary: 完善 Admin Panel 平台链接显示样式
+- files: src/components/AdminPanel.tsx
+- result: 使用颜色映射对象和完整的内联样式，确保所有平台链接都能正确显示为彩色激活状态
+
+Attempt 13
+- date: 2026-03-09
+- summary: 修复 Admin Panel 数据加载逻辑
+- files: src/components/AdminPanel.tsx
+- result: 优先使用平台链接API数据，而不是Shopify API数据，确保数据加载的可靠性
+
+ELIMINATED_HYPOTHESES:
+- 重复组件定义
+- props 类型冲突
+- TypeScript 编译错误
+- 数据覆盖问题
+- 重复数据加载
+- 后端路由顺序问题
+- 平台链接显示问题
+- 平台链接数据加载问题
+
+NEXT_DIRECTION:
+测试 CSV 上传功能是否正常工作。
+
+LAST_EXECUTION_STATUS:
+SUCCESS
+
+LAST_UPDATED:
+2026-03-07

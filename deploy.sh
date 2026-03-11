@@ -42,7 +42,7 @@ zip -r ../aloadecor-backend.zip .
 cd ..
 
 echo "4. 部署说明:"
-echo "   前端: 将 aloadecor-frontend.zip 部署到 Netlify"
+echo "   前端: 将 aloadecor-frontend.zip 部署到 Cloudflare Pages"
 echo "   后端: 将 aloadecor-backend.zip 部署到 Railway"
 echo "   配置: 设置前端的 VITE_API_URL 为后端服务器地址"
 

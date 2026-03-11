@@ -2,14 +2,18 @@
 
 ## 项目部署指南
 
-### 前端部署 (Netlify)
+### 前端部署 (Cloudflare Pages)
 
 1. 构建项目：
    ```bash
    npm run build
    ```
 
-2. 将 `dist` 目录部署到 Netlify
+2. 将 `dist` 目录部署到 Cloudflare Pages
+   - 连接 GitHub 仓库
+   - 选择 main 分支
+   - 构建命令：`npm run build`
+   - 发布目录：`dist`
 
 ### 后端部署 (Railway)
 
@@ -21,7 +25,7 @@
 
 ### 配置前端 API URL
 
-在 Netlify 中设置环境变量：
+在 Cloudflare Pages 中设置环境变量：
 - VITE_API_URL: https://your-railway-app-url.up.railway.app
 
 ## 项目结构

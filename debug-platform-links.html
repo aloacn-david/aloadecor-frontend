@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Platform Links</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .product {
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .platform-link {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-decoration: none;
+            color: white;
+        }
+        .active {
+            background-color: #4CAF50;
+        }
+        .inactive {
+            background-color: #ccc;
+            color: #666;
+        }
+        .amazon { background-color: #ff9900; }
+        .wayfair { background-color: #0066cc; }
+        .overstock { background-color: #9900cc; }
+        .homedepot { background-color: #ff6600; }
+        .lowes { background-color: #006633; }
+        .target { background-color: #cc0000; }
+        .walmart { background-color: #0071dc; }
+        .ebay { background-color: #e53238; }
+        .kohls { background-color: #800000; }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Debug Platform Links</h1>
+    <div id="loading" class="loading">Loading...</div>
+    <div id="products"></div>
+
+    <script>
+        const PLATFORMS = [
+            { key: 'amazon1', label: 'Amazon 1', colorClass: 'amazon' },
+            { key: 'amazon2', label: 'Amazon 2', colorClass: 'amazon' },
+            { key: 'wf1', label: 'WF 1', colorClass: 'wayfair' },
+            { key: 'wf2', label: 'WF 2', colorClass: 'wayfair' },
+            { key: 'os1', label: 'OS 1', colorClass: 'overstock' },
+            { key: 'os2', label: 'OS 2', colorClass: 'overstock' },
+            { key: 'hd1', label: 'HD 1', colorClass: 'homedepot' },
+            { key: 'hd2', label: 'HD 2', colorClass: 'homedepot' },
+            { key: 'lowes', label: "Lowe's", colorClass: 'lowes' },
+            { key: 'target', label: 'Target', colorClass: 'target' },
+            { key: 'walmart', label: 'Walmart', colorClass: 'walmart' },
+            { key: 'ebay', label: 'Ebay', colorClass: 'ebay' },
+            { key: 'kohls', label: "Kohl's", colorClass: 'kohls' },
+        ];
+
+        async function loadProducts() {
+            try {
+                const response = await fetch('https://aloadecor-backend-production.up.railway.app/api/shopify/products');
+                const products = await response.json();
+                
+                console.log('Products:', products);
+                
+                const productsDiv = document.getElementById('products');
+                const loadingDiv = document.getElementById('loading');
+                loadingDiv.style.display = 'none';
+                
+                // 显示前 5 个产品
+                products.slice(0, 5).forEach(product => {
+                    console.log('Product:', product.title);
+                    console.log('Platform Links:', product.platformLinks);
+                    
+                    let html = `<div class="product">`;
+                    html += `<h3>${product.title}</h3>`;
+                    html += `<p>ID: ${product.id}</p>`;
+                    html += `<div class="platform-links">`;
+                    
+                    PLATFORMS.forEach(platform => {
+                        const link = product.platformLinks?.[platform.key];
+                        const hasLink = link && link.trim() !== '';
+                        
+                        console.log(`Platform: ${platform.label}, Link: ${link}, HasLink: ${hasLink}`);
+                        
+                        if (hasLink) {
+                            html += `<a href="${link}" target="_blank" class="platform-link active ${platform.colorClass}">${platform.label}</a>`;
+                        } else {
+                            html += `<span class="platform-link inactive ${platform.colorClass}">${platform.label}</span>`;
+                        }
+                    });
+                    
+                    html += '</div>';
+                    html += '</div>';
+                    
+                    productsDiv.innerHTML += html;
+                });
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('loading').innerHTML = 'Error loading products: ' + error.message;
+            }
+        }
+
+        loadProducts();
+    </script>
+</body>
+</html>

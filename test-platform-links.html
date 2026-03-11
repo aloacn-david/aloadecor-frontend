@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Platform Links Test</title>
+    <style>
+        .platform-link {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 2px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-decoration: none;
+            color: white;
+        }
+        .active {
+            background-color: #4CAF50;
+        }
+        .inactive {
+            background-color: #ccc;
+            color: #666;
+        }
+        .amazon { background-color: #ff9900; }
+        .wayfair { background-color: #0066cc; }
+        .overstock { background-color: #9900cc; }
+        .homedepot { background-color: #ff6600; }
+        .lowes { background-color: #006633; }
+        .target { background-color: #cc0000; }
+        .walmart { background-color: #0071dc; }
+        .ebay { background-color: #e53238; }
+        .kohls { background-color: #800000; }
+    </style>
+</head>
+<body>
+    <h1>Platform Links Test</h1>
+    <div id="test-results"></div>
+
+    <script>
+        const PLATFORMS = [
+            { key: 'amazon1', label: 'Amazon 1', colorClass: 'amazon' },
+            { key: 'amazon2', label: 'Amazon 2', colorClass: 'amazon' },
+            { key: 'wf1', label: 'WF 1', colorClass: 'wayfair' },
+            { key: 'wf2', label: 'WF 2', colorClass: 'wayfair' },
+            { key: 'os1', label: 'OS 1', colorClass: 'overstock' },
+            { key: 'os2', label: 'OS 2', colorClass: 'overstock' },
+            { key: 'hd1', label: 'HD 1', colorClass: 'homedepot' },
+            { key: 'hd2', label: 'HD 2', colorClass: 'homedepot' },
+            { key: 'lowes', label: "Lowe's", colorClass: 'lowes' },
+            { key: 'target', label: 'Target', colorClass: 'target' },
+            { key: 'walmart', label: 'Walmart', colorClass: 'walmart' },
+            { key: 'ebay', label: 'Ebay', colorClass: 'ebay' },
+            { key: 'kohls', label: "Kohl's", colorClass: 'kohls' },
+        ];
+
+        const testProduct = {
+            id: 6766447755428,
+            title: 'Test Product',
+            platformLinks: {
+                amazon1: 'https://www.amazon.com/test1',
+                amazon2: 'https://www.amazon.com/test2',
+                wf1: 'https://www.wayfair.com/test1',
+                wf2: 'https://www.wayfair.com/test2',
+                os1: 'https://www.overstock.com/test1',
+                os2: 'https://www.overstock.com/test2',
+                hd1: 'https://www.homedepot.com/test1',
+                hd2: 'https://www.homedepot.com/test2',
+                lowes: 'https://www.lowes.com/test',
+                target: 'https://www.target.com/test',
+                walmart: 'https://www.walmart.com/test',
+                ebay: 'https://www.ebay.com/test',
+                kohls: 'https://www.kohls.com/test'
+            }
+        };
+
+        const resultsDiv = document.getElementById('test-results');
+        let html = '<h2>Test Results</h2>';
+        html += '<h3>Product: ' + testProduct.title + '</h3>';
+        html += '<div class="platform-links">';
+
+        PLATFORMS.forEach(platform => {
+            const link = testProduct.platformLinks[platform.key];
+            const hasLink = link && link.trim() !== '';
+            
+            console.log(`Platform: ${platform.label}, Link: ${link}, HasLink: ${hasLink}`);
+            
+            if (hasLink) {
+                html += `<a href="${link}" target="_blank" class="platform-link active ${platform.colorClass}">${platform.label}</a>`;
+            } else {
+                html += `<span class="platform-link inactive ${platform.colorClass}">${platform.label}</span>`;
+            }
+        });
+
+        html += '</div>';
+        resultsDiv.innerHTML = html;
+    </script>
+</body>
+</html>
