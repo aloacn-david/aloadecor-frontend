@@ -53,7 +53,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
-  const [activeTab, setActiveTab] = useState<'list' | 'bulk'>('list');
+  const [activeTab, setActiveTab] = useState<'list' | 'bulk' | 'analysis' | 'orders'>('list');
   const [csvData, setCsvData] = useState('');
   const [uploadMessage, setUploadMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -65,7 +65,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
   // Mock admin credentials - in a real app, this would be handled securely
   const ADMIN_CREDENTIALS = {
     username: 'admin',
-    password: '2026'
+    password: '1234'
   };
 
   useEffect(() => {
@@ -86,19 +86,36 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
       ]);
       
       console.log('[LoadProducts] Fetched', products.length, 'products from Shopify');
+      console.log('[LoadProducts] First product data:', products[0]);
+      console.log('[LoadProducts] First product platformLinks:', products[0].platformLinks);
       console.log('[LoadProducts] Fetched platform links for', Object.keys(platformLinksData).length, 'products');
-      console.log('[LoadProducts] Platform links data:', platformLinksData);
       
       // Merge products with platform links from backend
+      // Always use platform links API data (more reliable)
       const productsWithLinks = products.map(product => {
         const productId = String(product.id);
+        
+        // Use platform links API data
         const links = platformLinksData[productId];
         if (links) {
-          console.log(`[LoadProducts] Product ${productId} (${product.title}) has links:`, links);
+          console.log(`[LoadProducts] Product ${productId} (${product.title}) using platform links from API:`, links);
+          return {
+            ...product,
+            platformLinks: links
+          };
         }
+        
+        // Fallback to Shopify API data
+        if (product.platformLinks) {
+          console.log(`[LoadProducts] Product ${productId} (${product.title}) using platform links from Shopify API:`, product.platformLinks);
+          return product;
+        }
+        
+        // Fallback to empty links
+        console.log(`[LoadProducts] Product ${productId} (${product.title}) using empty platform links`);
         return {
           ...product,
-          platformLinks: links || {
+          platformLinks: {
             amazon1: '',
             amazon2: '',
             wf1: '',
@@ -502,6 +519,18 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
         >
           Bulk Upload
         </button>
+        <button 
+          className={`tab-button ${activeTab === 'analysis' ? 'active' : ''}`}
+          onClick={() => setActiveTab('analysis')}
+        >
+          AI Analysis
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'orders' ? 'active' : ''}`}
+          onClick={() => setActiveTab('orders')}
+        >
+          Order Summary
+        </button>
       </div>
 
       {isLoading && <div className="loading-indicator">Loading...</div>}
@@ -538,12 +567,57 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
                     
                     <div className="platform-links-status">
                       {PLATFORMS.map(platform => {
-                        const link = product.platformLinks?.[platform.key as keyof PlatformLinks];
+                        // 使用类型断言确保类型正确
+                        const link = product.platformLinks?.[platform.key as keyof typeof product.platformLinks] || '';
                         const hasLink = link && link.trim() !== '';
+                        
+                        // 为所有平台添加调试信息
+                        console.log(`[AdminPanel] ${product.title} - ${platform.label} (${platform.key}): link="${link}", hasLink=${hasLink}`);
+                        
+                        // 定义平台颜色映射
+                        const platformColors: Record<string, { bg: string; color: string }> = {
+                          amazon1: { bg: '#ff9900', color: '#000' },
+                          amazon2: { bg: '#ff9900', color: '#000' },
+                          wf1: { bg: '#7b1fa2', color: '#fff' },
+                          wf2: { bg: '#7b1fa2', color: '#fff' },
+                          os1: { bg: '#c41230', color: '#fff' },
+                          os2: { bg: '#c41230', color: '#fff' },
+                          hd1: { bg: '#f96302', color: '#fff' },
+                          hd2: { bg: '#f96302', color: '#fff' },
+                          lowes: { bg: '#004990', color: '#fff' },
+                          target: { bg: '#cc0000', color: '#fff' },
+                          walmart: { bg: '#0071ce', color: '#fff' },
+                          ebay: { bg: '#e53238', color: '#fff' },
+                          kohls: { bg: '#c41230', color: '#fff' }
+                        };
+                        
+                        // 获取当前平台的颜色
+                        const platformColor = platformColors[platform.key] || { bg: '#e5e5e5', color: '#999' };
+                        
                         return (
                           <span 
                             key={platform.key} 
                             className={`status-badge ${hasLink ? 'active' : 'inactive'}`}
+                            data-platform={platform.key}
+                            style={hasLink ? {
+                              backgroundColor: platformColor.bg,
+                              color: platformColor.color,
+                              padding: '0.25rem 0.5rem',
+                              borderRadius: '3px',
+                              fontSize: '0.75rem',
+                              fontWeight: '500',
+                              marginRight: '0.5rem',
+                              display: 'inline-block'
+                            } : {
+                              backgroundColor: '#e5e5e5',
+                              color: '#999',
+                              padding: '0.25rem 0.5rem',
+                              borderRadius: '3px',
+                              fontSize: '0.75rem',
+                              fontWeight: '500',
+                              marginRight: '0.5rem',
+                              display: 'inline-block'
+                            }}
                           >
                             {platform.label}
                           </span>
@@ -663,6 +737,89 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
         </div>
       )}
       
+      {/* AI Analysis Tab */}
+      {activeTab === 'analysis' && (
+        <div className="admin-content">
+          <div className="analysis-section">
+            <h2>AI Product Analysis</h2>
+            <p className="section-description">
+              Weekly or bi-weekly analysis of product links performance
+            </p>
+            
+            <div className="analysis-dashboard">
+              <div className="analysis-card">
+                <h3>Analysis Status</h3>
+                <p>Last analysis: March 15, 2026</p>
+                <p>Next scheduled analysis: March 22, 2026</p>
+                <button className="analyze-button">
+                  Run Analysis Now
+                </button>
+              </div>
+              
+              <div className="analysis-card">
+                <h3>Analysis Reports</h3>
+                <ul className="report-list">
+                  <li>
+                    <span className="report-date">March 15, 2026</span>
+                    <a href="#" className="report-link">View Report</a>
+                  </li>
+                  <li>
+                    <span className="report-date">March 1, 2026</span>
+                    <a href="#" className="report-link">View Report</a>
+                  </li>
+                  <li>
+                    <span className="report-date">February 15, 2026</span>
+                    <a href="#" className="report-link">View Report</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Order Summary Tab */}
+      {activeTab === 'orders' && (
+        <div className="admin-content">
+          <div className="orders-section">
+            <h2>Order Summary</h2>
+            <p className="section-description">
+              Daily order summary downloads
+            </p>
+            
+            <div className="orders-dashboard">
+              <div className="orders-card">
+                <h3>Today's Orders</h3>
+                <p>Date: March 11, 2026</p>
+                <p>Total Orders: 42</p>
+                <p>Total Revenue: $5,247.99</p>
+                <button className="download-button">
+                  Download Today's Summary
+                </button>
+              </div>
+              
+              <div className="orders-card">
+                <h3>Order History</h3>
+                <ul className="order-list">
+                  <li>
+                    <span className="order-date">March 10, 2026</span>
+                    <a href="#" className="order-link">Download</a>
+                  </li>
+                  <li>
+                    <span className="order-date">March 9, 2026</span>
+                    <a href="#" className="order-link">Download</a>
+                  </li>
+                  <li>
+                    <span className="order-date">March 8, 2026</span>
+                    <a href="#" className="order-link">Download</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {toastMessage && (
         <div className={`toast-notification ${toastMessage.type}`}>
           {toastMessage.message}
