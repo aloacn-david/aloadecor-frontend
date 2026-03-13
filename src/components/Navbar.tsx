@@ -12,17 +12,20 @@ const Navbar: React.FC = () => {
         <div className="navbar-actions">
           <Link to="/account" className="action-link">Account</Link>
           <Link to="/favorites" className="action-link">Favorites</Link>
-          <Link to="/cart" className="action-link">Cart</Link>
+          <Link to="/cart" className="action-link">
+            <span>Cart</span>
+            <span className="cart-count">(0)</span>
+          </Link>
         </div>
       </div>
       
       {/* Secondary Navigation */}
       <div className="navbar-secondary">
         <ul className="navbar-links">
-          <li><Link to="/products" className="nav-link">Products</Link></li>
-          <li><Link to="/categories" className="nav-link">Categories</Link></li>
-          <li><Link to="/about" className="nav-link">About Us</Link></li>
-          <li><Link to="/contact" className="nav-link">Contact</Link></li>
+          <li><Link to="/products" className="nav-link">PRODUCTS</Link></li>
+          <li><Link to="/categories" className="nav-link">CATEGORIES</Link></li>
+          <li><Link to="/about" className="nav-link">ABOUT US</Link></li>
+          <li><Link to="/contact" className="nav-link">CONTACT</Link></li>
         </ul>
       </div>
     </nav>

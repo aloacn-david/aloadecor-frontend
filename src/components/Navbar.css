@@ -1,9 +1,9 @@
-/* Navbar Styles - Williams Sonoma Inspired */
+/* Navbar Styles - Updated for ALOA DECOR */
 
 .navbar {
   background-color: #fff;
-  border-bottom: 1px solid #e5e5e5;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  padding: 0 2rem;
 }
 
 /* Top Bar */
@@ -11,76 +11,45 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  padding: 1rem 0;
   max-width: 1400px;
   margin: 0 auto;
 }
 
-/* Search Box */
-.navbar-search-box {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-  width: 200px;
-}
-
-.search-input {
-  border: none;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.9rem;
-  outline: none;
-  flex: 1;
-  color: #333;
-}
-
-.search-input::placeholder {
-  color: #999;
-}
-
-.search-button {
-  background-color: #000;
-  color: #fff;
-  border: none;
-  padding: 0.5rem 0.75rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.search-button:hover {
-  background-color: #333;
-}
-
 /* Logo */
 .navbar-logo {
-  font-size: 1.75rem;
+  font-size: 1.8rem;
   font-weight: 400;
-  color: #000;
+  color: #333;
   text-decoration: none;
-  letter-spacing: 0.15em;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   text-transform: uppercase;
-  font-family: 'Times New Roman', Times, serif;
+  letter-spacing: 0.3em;
+  line-height: 1;
+  display: inline-block;
+  font-feature-settings: 'tnum' 1;
+  -moz-font-feature-settings: 'tnum' 1;
+  -ms-font-feature-settings: 'tnum' 1;
+  -webkit-font-feature-settings: 'tnum' 1;
 }
 
 .navbar-logo:hover {
-  color: #666;
+  color: #333;
 }
 
 /* Actions */
 .navbar-actions {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
   align-items: center;
 }
 
 .action-link {
-  color: #333;
+  color: #000;
   text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 400;
+  font-size: 0.9rem;
+  font-weight: 600;
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 0.25rem;
 }
@@ -89,12 +58,18 @@
   color: #000;
 }
 
+.cart-count {
+  font-size: 0.8rem;
+  color: #666;
+}
+
 /* Secondary Navigation */
 .navbar-secondary {
-  border-top: 1px solid #e5e5e5;
-  padding: 0.75rem 2rem;
+  padding: 0.5rem 0;
   display: flex;
   justify-content: center;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .navbar-links {
@@ -103,6 +78,9 @@
   gap: 2.5rem;
   margin: 0;
   padding: 0;
+  max-width: 1400px;
+  width: 100%;
+  justify-content: center;
 }
 
 .navbar-links li {
@@ -110,10 +88,10 @@
 }
 
 .nav-link {
-  color: #333;
+  color: #000;
   text-decoration: none;
   font-size: 0.9rem;
-  font-weight: 400;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0.5rem 0;

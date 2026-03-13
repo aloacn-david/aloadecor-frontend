@@ -194,46 +194,66 @@ main {
 }
 
 .hero {
-  padding: 4rem 2rem;
+  padding: 8rem 2rem;
   text-align: center;
-  background-color: #a7c796; /* Pantone 13-6006 TCX */
+  background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: white;
-  border-radius: 12px;
+  position: relative;
+  margin: 0 -2rem;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1;
 }
 
 .hero-content {
   max-width: 600px;
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-title {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
+  color: white;
 }
 
 .hero-subtitle {
   font-size: 1.25rem;
   margin-bottom: 2rem;
-  color: #e0e0ff;
+  color: white;
+  opacity: 0.9;
 }
 
 .hero-button {
-  padding: 0.75rem 2rem;
+  padding: 1rem 2.5rem;
   font-size: 1.1rem;
   font-weight: 600;
   border: none;
-  border-radius: 12px;
-  background-color: #000;
-  color: #fff;
+  border-radius: 25px;
+  background-color: white;
+  color: #333;
   cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
 
 .hero-button:hover {
-  background-color: #333;
+  background-color: #f8f8f8;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
 }
 
 .apple-button {
@@ -371,5 +391,5 @@ main {
   background-color: #004494;
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
 }
-// Fri Feb 20 15:41:05 CST 2026
-// Build refresh Fri Feb 20 15:48:48 CST 2026
+/* Fri Feb 20 15:41:05 CST 2026 */
+/* Build refresh Fri Feb 20 15:48:48 CST 2026 */
