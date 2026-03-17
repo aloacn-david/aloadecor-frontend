@@ -3,7 +3,7 @@ import { mockProducts } from '../data/mockProducts';
 
 export class ShopifyService {
   private useMockData = false; // 默认使用API，API失败才用mock
-  private apiTimeout = 5000; // 5秒超时
+  private apiTimeout = 30000; // 30秒超时
 
   async fetchProducts(): Promise<ShopifyProduct[]> {
     if (this.useMockData) {

@@ -2,7 +2,7 @@
 API接口模块
 提供RESTful API接口
 """
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Response
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
@@ -14,15 +14,21 @@ from ..tasks.task_scheduler import TaskScheduler
 from ..models.product_analysis import AnalysisStatus, PlatformType
 from ..db.mongodb import connect_to_mongo, close_mongo_connection
 from .content_management import router as content_router
+from .unified import router as unified_router
+from ..utils.monitoring import monitor_middleware, get_metrics
 
 # 创建应用
 app = FastAPI(
     title="ALOA DECOR API",
     description="Unified API for ALOA DECOR ecommerce platform",
-    version="2.0.0"
+    version="3.0.0"
 )
 
+# 添加监控中间件
+app.middleware("http")(monitor_middleware)
+
 # 注册路由
+app.include_router(unified_router)
 app.include_router(content_router)
 
 # 事件处理
@@ -222,19 +228,25 @@ async def get_platforms():
         "platforms": [platform.value for platform in PlatformType]
     }
 
+@app.get("/metrics")
+async def metrics():
+    """Prometheus指标端点"""
+    metrics_content, content_type = get_metrics()
+    return Response(content=metrics_content, media_type=content_type)
+
+
 @app.get("/")
 async def root():
     """根路径"""
     return {
-        "message": "AI Product Listing Analysis API",
-        "version": "1.0.0",
+        "message": "ALOA DECOR Unified API",
+        "version": "3.0.0",
         "endpoints": [
-            "/api/analyze - 分析单个产品",
-            "/api/analyze/batch - 批量分析产品",
-            "/api/task/{task_id} - 获取任务状态",
-            "/api/tasks - 获取任务列表",
-            "/api/summary - 获取分析摘要",
-            "/api/platforms - 获取支持的平台列表"
+            "/api/shopify/products - 获取Shopify产品",
+            "/api/platform-links - 平台链接管理",
+            "/api/content/status - 内容状态管理",
+            "/api/health - 健康检查",
+            "/metrics - Prometheus指标"
         ]
     }
 

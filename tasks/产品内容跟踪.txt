@@ -163,27 +163,47 @@
 3. ✅ 实现13个内容项的状态管理
 4. ✅ 完成路由集成和性能优化
 
-### 七、后端服务启动说明
-#### 完整方案启动步骤：
-1. **启动MongoDB数据库**
-2. **启动FastAPI后端服务**：
+### 七、统一后端架构 (v3.0.0)
+#### 架构升级说明：
+将原来的Express和FastAPI双后端统一为单一FastAPI后端，整合所有功能：
+
+**整合的功能模块**：
+- ✅ Shopify产品同步API
+- ✅ 平台链接管理API
+- ✅ 产品内容状态管理API
+- ✅ AI分析功能（保留）
+- ✅ Prometheus监控系统
+- ✅ 结构化日志记录
+
+#### 新后端启动步骤：
+1. **配置环境变量**：
    ```bash
    cd ai-analyzer
+   cp .env.example .env
+   # 编辑.env填入真实配置
+   ```
+
+2. **安装依赖并启动**：
+   ```bash
    source venv/bin/activate
    pip install -r requirements.txt
    uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
    ```
-3. **配置环境变量**：在`ai-analyzer/.env`中配置：
-   - SHOPIFY_STORE=您的Shopify店铺地址
-   - SHOPIFY_TOKEN=您的Shopify API凭证
-   - MONGODB_URI=MongoDB连接地址
-4. **同步Shopify产品**：调用`POST /api/content/sync/shopify`接口同步所有产品
 
-#### 功能说明：
-- ✅ Shopify凭证有效，自动同步所有产品到内容管理系统
-- ✅ 产品内容状态永久保存在MongoDB数据库
-- ✅ 后台勾选状态实时同步到前台
-- ✅ 支持跨设备数据同步
+3. **访问API文档**：http://localhost:8000/docs
+
+#### 主要API端点：
+- `GET /api/shopify/products` - 获取Shopify产品（含平台链接）
+- `GET/POST /api/platform-links/*` - 平台链接管理
+- `GET/POST /api/content/status/*` - 内容状态管理
+- `GET /metrics` - Prometheus监控指标
+- `GET /health` - 健康检查
+
+#### 性能优化：
+- ⏱️ API超时从5秒优化到30秒
+- 📊 添加Prometheus指标监控
+- 📝 结构化日志记录所有请求
+- 🔄 异步处理提高并发性能
 
 ### 八、使用说明
 1. 前台访问：点击顶部"Product Contents"按钮查看所有产品内容状态
