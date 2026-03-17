@@ -8,7 +8,7 @@ import {
 } from '../services/platformLinks';
 import { aiAnalysisService, AnalysisResult, AnalysisStatus, StoredAnalysisResult } from '../services/aiAnalysis';
 import { contentService } from '../services/contentService';
-import { ContentTypeConfig, ProductContentStatus } from '../types/productContent';
+import { ContentTypeConfig, ProductContentStatus, ContentType } from '../types/productContent';
 import './AdminPanel.css';
 
 // Platform configuration
@@ -81,19 +81,19 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ onLinksUpdated }) => {
 
   // 预定义默认内容配置，永远显示13个选项
 const DEFAULT_CONTENT_CONFIGS = [
-  { type: '全美国杰西', label: '全美国杰西', icon: '🇺🇸', color: '#4CAF50', order: 1 },
-  { type: '全计价表', label: '全计价表', icon: '📊', color: '#2196F3', order: 2 },
-  { type: '新品product sheet', label: '新品product sheet', icon: '📋', color: '#FF9800', order: 3 },
-  { type: '新品调研', label: '新品调研', icon: '🔍', color: '#9C27B0', order: 4 },
-  { type: '上传价核价', label: '上传价核价', icon: '💰', color: '#F44336', order: 5 },
-  { type: '主图', label: '主图', icon: '🖼️', color: '#00BCD4', order: 6 },
-  { type: '白底图', label: '白底图', icon: '⬜', color: '#795548', order: 7 },
-  { type: '细节图', label: '细节图', icon: '🔍', color: '#607D8B', order: 8 },
-  { type: '尺寸图', label: '尺寸图', icon: '📏', color: '#3F51B5', order: 9 },
-  { type: '安装视频', label: '安装视频', icon: '🎬', color: '#E91E63', order: 10 },
-  { type: '场景视频/网红视频', label: '场景视频/网红视频', icon: '🎥', color: '#FF5722', order: 11 },
-  { type: '文字', label: '文字', icon: '📝', color: '#8BC34A', order: 12 },
-  { type: '新品上架', label: '新品上架', icon: '✅', color: '#4CAF50', order: 13 },
+  { type: '全美国杰西' as ContentType, label: '全美国杰西', icon: '🇺🇸', color: '#4CAF50', order: 1 },
+  { type: '全计价表' as ContentType, label: '全计价表', icon: '📊', color: '#2196F3', order: 2 },
+  { type: '新品product sheet' as ContentType, label: '新品product sheet', icon: '📋', color: '#FF9800', order: 3 },
+  { type: '新品调研' as ContentType, label: '新品调研', icon: '🔍', color: '#9C27B0', order: 4 },
+  { type: '上传价核价' as ContentType, label: '上传价核价', icon: '💰', color: '#F44336', order: 5 },
+  { type: '主图' as ContentType, label: '主图', icon: '🖼️', color: '#00BCD4', order: 6 },
+  { type: '白底图' as ContentType, label: '白底图', icon: '⬜', color: '#795548', order: 7 },
+  { type: '细节图' as ContentType, label: '细节图', icon: '🔍', color: '#607D8B', order: 8 },
+  { type: '尺寸图' as ContentType, label: '尺寸图', icon: '📏', color: '#3F51B5', order: 9 },
+  { type: '安装视频' as ContentType, label: '安装视频', icon: '🎬', color: '#E91E63', order: 10 },
+  { type: '场景视频/网红视频' as ContentType, label: '场景视频/网红视频', icon: '🎥', color: '#FF5722', order: 11 },
+  { type: '文字' as ContentType, label: '文字', icon: '📝', color: '#8BC34A', order: 12 },
+  { type: '新品上架' as ContentType, label: '新品上架', icon: '✅', color: '#4CAF50', order: 13 },
 ];
 
 // Content Management state

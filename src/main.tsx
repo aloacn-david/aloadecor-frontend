@@ -14,6 +14,7 @@ import { ShopifyService } from './services/shopify';
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<'products' | 'admin' | 'product_contents'>('products');
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  // @ts-ignore
   const [isLoading, setIsLoading] = useState(false);
 
   // 加载产品和平台链接数据
