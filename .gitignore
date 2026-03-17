@@ -4,3 +4,8 @@ dist/
 .env.local
 .DS_Store
 backend/
+ai-analyzer/venv/
+*.log
+__pycache__/
+*.pyc
+
