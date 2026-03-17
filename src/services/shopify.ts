@@ -2,19 +2,29 @@ import { ShopifyProduct } from '../types/shopify';
 import { mockProducts } from '../data/mockProducts';
 
 export class ShopifyService {
-  private useMockData = false;
+  private useMockData = false; // 默认使用API，API失败才用mock
+  private apiTimeout = 5000; // 5秒超时
 
   async fetchProducts(): Promise<ShopifyProduct[]> {
     if (this.useMockData) {
       console.log('Using mock data for testing');
-      return mockProducts;
+      return mockProducts.slice(0, 20); // 只加载前20个产品，避免性能问题
     }
 
     try {
       console.log('Fetching products from backend proxy...');
       // Use environment variable for API URL or fallback to production backend
       const apiUrl = import.meta.env.VITE_API_URL || 'https://aloadecor-backend-production.up.railway.app';
-      const response = await fetch(`${apiUrl}/api/shopify/products`);
+      
+      // 添加超时控制器
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.apiTimeout);
+      
+      const response = await fetch(`${apiUrl}/api/shopify/products`, {
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
       
       if (!response.ok) {
         throw new Error(`Backend proxy error: ${response.status} ${response.statusText}`);
@@ -22,11 +32,11 @@ export class ShopifyService {
       
       const products = await response.json();
       console.log(`Successfully fetched ${products.length} products from Shopify`);
-      return products;
+      return products.slice(0, 50); // 限制最多50个产品
     } catch (error) {
       console.error('Error fetching products:', error);
       // Fallback to mock data if API fails
-      return mockProducts;
+      return mockProducts.slice(0, 20);
     }
   }
 }

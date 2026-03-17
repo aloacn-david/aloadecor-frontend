@@ -8,22 +8,13 @@ const Navbar: React.FC = () => {
       {/* Top Bar */}
       <div className="navbar-top">
         <Link to="/" className="navbar-logo">ALOA DECOR</Link>
-        
-        <div className="navbar-actions">
-          <Link to="/account" className="action-link">Account</Link>
-          <Link to="/favorites" className="action-link">Favorites</Link>
-          <Link to="/cart" className="action-link">
-            <span>Cart</span>
-            <span className="cart-count">(0)</span>
-          </Link>
-        </div>
       </div>
       
       {/* Secondary Navigation */}
       <div className="navbar-secondary">
         <ul className="navbar-links">
-          <li><Link to="/products" className="nav-link">PRODUCTS</Link></li>
-          <li><Link to="/categories" className="nav-link">CATEGORIES</Link></li>
+          <li><Link to="/products" className="nav-link">PRODUCTS PAGES</Link></li>
+          <li><Link to="/product-contents" className="nav-link">PRODUCT CONTENTS</Link></li>
           <li><Link to="/about" className="nav-link">ABOUT US</Link></li>
           <li><Link to="/contact" className="nav-link">CONTACT</Link></li>
         </ul>

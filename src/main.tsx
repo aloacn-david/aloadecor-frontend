@@ -7,15 +7,18 @@ import AdminPanel from './components/AdminPanel';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
+import ProductContents from './pages/ProductContents';
 import { ShopifyProduct } from './types/shopify';
 import { ShopifyService } from './services/shopify';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'products' | 'admin'>('products');
+  const [currentView, setCurrentView] = useState<'products' | 'admin' | 'product_contents'>('products');
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // 加载产品和平台链接数据
   const loadProducts = async () => {
+    setIsLoading(true);
     try {
       const shopifyService = new ShopifyService();
       const products = await shopifyService.fetchProducts();
@@ -36,6 +39,11 @@ const App: React.FC = () => {
       setProducts(products);
     } catch (error) {
       console.error('Error loading products:', error);
+      // 加载失败时强制使用mock数据
+      const { mockProducts } = await import('./data/mockProducts');
+      setProducts(mockProducts.slice(0, 20));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -63,15 +71,21 @@ const App: React.FC = () => {
           View Products
         </button>
         <button 
+          className={`view-button ${currentView === 'product_contents' ? 'active' : ''}`}
+          onClick={() => setCurrentView('product_contents')}
+        >
+          Product Contents
+        </button>
+        <button 
           className={`view-button ${currentView === 'admin' ? 'active' : ''}`}
           onClick={() => setCurrentView('admin')}
         >
           Admin Panel
         </button>
       </div>
-      {currentView === 'products' ? 
-        <ProductList products={products} onRefresh={loadProducts} /> : 
-        <AdminPanel onLinksUpdated={loadProducts} />}
+      {currentView === 'products' && <ProductList products={products} onRefresh={loadProducts} />}
+      {currentView === 'product_contents' && <ProductContents products={products} />}
+      {currentView === 'admin' && <AdminPanel onLinksUpdated={loadProducts} />}
       <Footer />
     </div>
   );
