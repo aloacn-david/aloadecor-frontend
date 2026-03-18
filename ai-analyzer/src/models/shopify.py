@@ -39,8 +39,9 @@ class ShopifyProduct(BaseModel):
     images: List[ShopifyImage] = []
     tags: Optional[str] = None
     
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
 
 
 class PlatformLinks(BaseModel):
@@ -62,8 +63,9 @@ class PlatformLinks(BaseModel):
     created_at: datetime = Field(default_factory=datetime.now)
     updated_at: datetime = Field(default_factory=datetime.now)
     
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
 
 
 class PlatformLinksUpdate(BaseModel):

@@ -144,10 +144,9 @@ class ProductLink(BaseModel):
     url: str = Field(description="产品链接")
     last_checked: Optional[datetime] = Field(None, description="上次检查时间")
     
-    class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
 
 
 class ScrapedProductData(BaseModel):
@@ -180,10 +179,9 @@ class ScrapedProductData(BaseModel):
     scraped_at: datetime = Field(default_factory=datetime.now, description="抓取时间")
     region: Optional[str] = Field(None, description="地区")
     
-    class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
 
 
 class ProductAnalysis(BaseModel):
@@ -212,10 +210,9 @@ class ProductAnalysis(BaseModel):
     # 规则分析评分
     rule_based_score: Optional[float] = Field(None, ge=0, le=100, description="规则分析评分")
     
-    class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
 
 
 class AnalysisTask(BaseModel):
@@ -230,7 +227,6 @@ class AnalysisTask(BaseModel):
     finished_at: Optional[datetime] = Field(None, description="结束时间")
     error_message: Optional[str] = Field(None, description="错误信息")
     
-    class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+    model_config = {
+        "arbitrary_types_allowed": True
+    }

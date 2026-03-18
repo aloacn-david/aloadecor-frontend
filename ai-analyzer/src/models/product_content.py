@@ -41,10 +41,9 @@ class ProductContentStatus(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.now)
     updated_by: Optional[str] = Field(None, description="更新人")
 
-    class Config:
-        json_encoders = {
-            datetime: lambda v: v.isoformat()
-        }
+    model_config = {
+        "arbitrary_types_allowed": True
+    }
 
 # 更新请求
 class ContentStatusUpdate(BaseModel):
