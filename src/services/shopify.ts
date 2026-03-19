@@ -14,7 +14,7 @@ export class ShopifyService {
     try {
       console.log('Fetching products from backend proxy...');
       // Use environment variable for API URL or fallback to production backend
-      const apiUrl = import.meta.env.VITE_API_URL || 'https://aloadecor-backend-production.up.railway.app';
+      const apiUrl = import.meta.env.VITE_API_URL || 'https://aloadecor-backend-production-f5a4.up.railway.app';
       
       // 添加超时控制器
       const controller = new AbortController();

@@ -1,6 +1,6 @@
 import { PlatformLinks } from '../types/shopify';
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://aloadecor-backend-production.up.railway.app';
+const API_URL = import.meta.env.VITE_API_URL || 'https://aloadecor-backend-production-f5a4.up.railway.app';
 
 // 获取所有平台链接
 export async function getAllPlatformLinks(): Promise<Record<string, PlatformLinks>> {
