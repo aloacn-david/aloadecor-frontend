@@ -1,0 +1,25 @@
+# 忽略前端文件
+src/
+node_modules/
+package.json
+package-lock.json
+vite.config.ts
+tsconfig.json
+tsconfig.node.json
+index.html
+_headers
+_redirects
+
+# 忽略旧的后端目录
+ai-analyzer/
+
+# 忽略测试和文档
+tests/
+tasks/
+*.md
+*.txt
+
+# 只保留后端部署文件
+!app.py
+!requirements.txt
+!Procfile
