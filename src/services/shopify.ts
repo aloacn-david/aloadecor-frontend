@@ -32,7 +32,7 @@ export class ShopifyService {
       
       const products = await response.json();
       console.log(`Successfully fetched ${products.length} products from Shopify`);
-      return products.slice(0, 50); // 限制最多50个产品
+      return products; // 返回所有产品
     } catch (error) {
       console.error('Error fetching products:', error);
       // Fallback to mock data if API fails
