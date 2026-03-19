@@ -165,7 +165,7 @@ class ScrapedProductData(BaseModel):
     review_count: Optional[int] = Field(None, ge=0, description="评论数")
     
     # 内容
-    images: List[Dict[str, any]] = Field(default_factory=list, description="图片列表")
+    images: List[Dict[str, Any]] = Field(default_factory=list, description="图片列表")
     bullets: List[str] = Field(default_factory=list, description="要点列表")
     description: Optional[str] = Field(None, description="描述")
     
@@ -173,7 +173,7 @@ class ScrapedProductData(BaseModel):
     specifications: Dict[str, str] = Field(default_factory=dict, description="规格参数")
     
     # 评论
-    reviews: List[Dict[str, any]] = Field(default_factory=list, description="评论列表")
+    reviews: List[Dict[str, Any]] = Field(default_factory=list, description="评论列表")
     
     # 元数据
     scraped_at: datetime = Field(default_factory=datetime.now, description="抓取时间")
