@@ -1,32 +1,15 @@
 """
-最简单的Flask API - 100%独立，部署即成功
+简单的入口文件，重定向到ai-analyzer的main模块
 """
-from flask import Flask, jsonify
-from datetime import datetime
+import sys
+import os
 
-app = Flask(__name__)
+# 添加ai-analyzer到Python路径
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'ai-analyzer'))
 
-@app.route('/')
-def root():
-    """根路径"""
-    return jsonify({
-        "message": "ALOA DECOR API is running!",
-        "version": "1.0.0",
-        "timestamp": datetime.now().isoformat()
-    })
+# 导入并运行FastAPI应用
+from src.api.main import app
 
-@app.route('/health')
-def health_check():
-    """健康检查"""
-    return jsonify({
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat()
-    })
-
-@app.route('/test')
-def test():
-    """测试端点"""
-    return jsonify({"status": "ok", "message": "API is working correctly"})
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

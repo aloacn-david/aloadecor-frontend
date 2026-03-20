@@ -18,5 +18,6 @@ tasks/
 
 # 保留后端文件
 !ai-analyzer/
-!Dockerfile
+!app.py
+!requirements.txt
 !railway.json
