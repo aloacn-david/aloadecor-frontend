@@ -51,6 +51,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 简单的健康检查端点（不依赖MongoDB）
+@app.get("/health")
+async def health_check():
+    """健康检查"""
+    import os
+    return {
+        "status": "ok",
+        "timestamp": datetime.now().isoformat(),
+        "shopifyStore": os.getenv("SHOPIFY_STORE", "not configured")
+    }
+
 # 初始化分析器和调度器
 rule_analyzer = RuleBasedAnalyzer()
 try:

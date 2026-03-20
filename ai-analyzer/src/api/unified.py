@@ -439,19 +439,4 @@ async def update_product_meta(product_id: str, updates: Dict[str, Any]):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/health")
-@monitor_api("health_check")
-async def health_check():
-    """健康检查"""
-    import os
-    return {
-        "status": "ok",
-        "timestamp": datetime.now().isoformat(),
-        "shopifyStore": os.getenv("SHOPIFY_STORE", "not configured"),
-        "database": "connected",
-        "services": {
-            "shopify": "available" if shopify_service else "unavailable (using mock data)",
-            "platform_links": "available",
-            "content_management": "available"
-        }
-    }
+
