@@ -4,7 +4,7 @@
  */
 import { ContentTypeConfig, ProductContentStatus, ContentStatusUpdate } from '../types/productContent';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://aloadecor-backend-production-f5a4.up.railway.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://aloadecor-backend-production.up.railway.app';
 
 export class ContentService {
   /**
