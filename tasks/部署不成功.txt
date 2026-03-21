@@ -1,0 +1,20 @@
+2026-03-19T07:27:18.903433149Z [inf]  Starting Container
+2026-03-19T07:27:19.798862481Z [inf]  [Database] Connection string (masked): mongodb://localhost:27017/aloadecor
+2026-03-19T07:27:19.798886292Z [inf]  > node server.js
+2026-03-19T07:27:19.798892384Z [inf]  
+2026-03-19T07:27:19.798898863Z [inf]  [Database] Attempting to connect to MongoDB...
+2026-03-19T07:27:19.798901548Z [inf]  > aloadecor-backend@1.0.0 start
+2026-03-19T07:27:19.798922218Z [inf]  
+2026-03-19T07:27:19.799193064Z [inf]  ✅ Server ready to proxy requests
+2026-03-19T07:27:19.799201552Z [inf]  ====================================
+2026-03-19T07:27:19.799205789Z [inf]  ====================================
+2026-03-19T07:27:19.799214028Z [inf]  === Shopify API Proxy Server ===
+2026-03-19T07:27:19.799220164Z [inf]  ====================================
+2026-03-19T07:27:19.799224451Z [inf]  Server running on: http://localhost:8080
+2026-03-19T07:27:19.799227867Z [inf]  Health check:     http://localhost:8080/health
+2026-03-19T07:27:19.799231841Z [inf]  Products API:     http://localhost:8080/api/shopify/products
+2026-03-19T07:27:19.799235469Z [inf]  Categories API:   http://localhost:8080/api/shopify/categories
+2026-03-19T07:27:19.799238422Z [inf]  Platform Links:   http://localhost:8080/api/platform-links
+2026-03-19T07:27:19.799241206Z [inf]  Shopify store:    goldianlightandliving.myshopify.com
+2026-03-19T07:27:19.799244088Z [inf]  Database:         Local MongoDB
+2026-03-19T07:27:19.799247268Z [inf]  ====================================
